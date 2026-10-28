@@ -3,120 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Portfolio</title>
+<title>Ardhan Kawakibi | Portfolio</title> <!-- text shown on the browser tab -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ============ COLORS & FONTS: change these to restyle the whole site ============ */
+/* =====================================================================
+   HOW TO READ THIS FILE
+   1) CSS (the big block at the top of the file): looks. Every size is in px.
+      Change a number, save, refresh. Sections are marked with ##### banners.
+   2) HTML (the middle of the file): your text. Also marked with banners.
+   3) JavaScript (the bottom of the file): animations. You only edit the ROLES list there.
+   ===================================================================== */
+
+/* ##### 1. COLORS & FONTS (change colors here, they apply everywhere) ##### */
 :root{
-  --bg:#0c1424; --bg2:#121c33; --text:#eef2f7; --muted:#9aa7bf;
-  --accent:#4d7cff; --accent2:#ff7a59; --line:#243152;
-  --head:'Bricolage Grotesque',Arial,sans-serif; --body:'Instrument Sans',Arial,sans-serif;
+  --bg:#0c1424;        /* page background */
+  --bg2:#121c33;       /* card background */
+  --text:#eef2f7;      /* main text color */
+  --muted:#9aa7bf;    /* softer grey text */
+  --accent:#4d7cff;    /* main blue */
+  --accent2:#ff7a59;   /* orange highlight */
+  --line:#243152;      /* thin lines and borders */
+  --head:'Bricolage Grotesque',Arial,sans-serif;  /* heading font */
+  --body:'Instrument Sans',Arial,sans-serif;      /* body font */
 }
-*{box-sizing:border-box;margin:0;padding:0}
+
+/* ##### 2. GENERAL (applies to the whole page) ##### */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;scroll-padding-top:70px}
-body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.65;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.65;overflow-x:hidden} /* 16px = normal text size */
 a{color:inherit;text-decoration:none}
 :focus-visible{outline:2px solid var(--accent2);outline-offset:3px}
 h1,h2,h3{font-family:var(--head);line-height:1.1}
-section{max-width:1040px;margin:0 auto;padding:96px 24px}
-h2{font-size:clamp(2rem,5vw,3rem);margin-bottom:12px}
-.sub{color:var(--muted);max-width:560px;margin-bottom:44px}
+section{max-width:1040px;margin:0 auto;padding:96px 24px} /* max-width = page width; 96px = space above/below each section; 24px = left/right space */
+h2{font-size:40px;margin-bottom:12px}                      /* section titles (About, Certificates...) */
+.sub{color:var(--muted);max-width:560px;margin-bottom:44px} /* grey text under each section title; 44px = gap before content */
 
-/* loader */
+/* ##### 3. LOADING SCREEN ##### */
 #loader{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:transform .9s cubic-bezier(.77,0,.18,1)}
 #loader.done{transform:translateY(-100%)}
-.ld-name{font:800 clamp(2rem,7vw,4rem)/1 var(--head);letter-spacing:.04em}
-.ld-bar{width:min(260px,60vw);height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.ld-name{font:800 56px/1 var(--head);letter-spacing:2px} /* name on loading screen: 56px */
+.ld-bar{width:260px;height:3px;background:var(--line);border-radius:3px;overflow:hidden} /* progress bar: 260px wide, 3px thick */
 .ld-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
 #ldNum{color:var(--muted);font-variant-numeric:tabular-nums}
 
-/* nav */
-header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:rgba(12,20,36,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.logo{font:800 1.2rem var(--head)}
-#links{display:flex;gap:26px}
-#links a{color:var(--muted);font-size:.95rem;transition:color .2s}
+/* ##### 4. TOP MENU BAR ##### */
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:rgba(12,20,36,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)} /* padding 14px 24px = bar height/side space */
+.logo{font:800 19px var(--head)}  /* logo text size */
+#links{display:flex;gap:26px}      /* 26px = space between menu items */
+#links a{color:var(--muted);font-size:15px;transition:color .2s} /* menu text size */
 #links a:hover,#links a.on{color:var(--text)}
 #links a.on{box-shadow:0 2px 0 var(--accent2)}
-#burger{display:none;background:none;border:0;color:var(--text);font-size:1.6rem;cursor:pointer}
+#burger{display:none;background:none;border:0;color:var(--text);font-size:26px;cursor:pointer}
 
-/* hero */
-#home{min-height:100vh;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;gap:40px;padding-top:120px;position:relative}
-.glow{position:fixed;width:520px;height:520px;border-radius:50%;filter:blur(110px);opacity:.28;z-index:-1;animation:drift 14s ease-in-out infinite alternate}
+/* ##### 5. HERO / HOME (name, photo, buttons, numbers) ##### */
+#home{min-height:100vh;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;gap:40px;padding-top:120px;position:relative} /* gap 40px = space between text and photo */
+.glow{position:fixed;width:520px;height:520px;border-radius:50%;filter:blur(110px);opacity:.28;z-index:-1;animation:drift 14s ease-in-out infinite alternate} /* blurry background light */
 .g1{background:var(--accent);top:-120px;left:-120px}
 .g2{background:var(--accent2);bottom:-160px;right:-120px;animation-delay:-6s}
 @keyframes drift{to{transform:translate(90px,60px) scale(1.15)}}
-.hi{color:var(--accent2);font-weight:600;margin-bottom:10px}
-#heroName{font-size:clamp(2.6rem,8vw,5.4rem);font-weight:800;letter-spacing:-.02em}
+.hi{color:var(--accent2);font-weight:600;margin-bottom:10px}   /* "Hello! Nice to meet you." */
+#heroName{font-size:86px;font-weight:800;letter-spacing:-2px}   /* BIG NAME size: 86px */
 #heroName span{display:inline-block;opacity:0;transform:translateY(60px) rotate(4deg);transition:.7s cubic-bezier(.2,.8,.2,1)}
 body.ready #heroName span{opacity:1;transform:none}
-.role{font-size:1.15rem;margin:18px 0 8px;min-height:1.8em}
+#heroName .w{display:block;white-space:nowrap;font-weight:inherit} /* each word on its own line */
+.role{font-size:18px;margin:18px 0 8px;min-height:32px} /* "I am a ..." line */
 .role b{color:var(--accent);border-right:2px solid var(--accent2);padding-right:4px}
-.intro{color:var(--muted);max-width:540px}
-.btns{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-.btn{padding:12px 24px;border-radius:10px;font-weight:600;border:1px solid var(--accent);transition:.25s;cursor:pointer;font-family:var(--body);font-size:1rem}
+.intro{color:var(--muted);max-width:540px}  /* intro paragraph width */
+.btns{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap} /* gap between buttons */
+.btn{padding:12px 24px;border-radius:10px;font-weight:600;border:1px solid var(--accent);transition:.25s;cursor:pointer;font-family:var(--body);font-size:16px} /* button: 12px top/bottom, 24px left/right */
 .btn.fill{background:var(--accent);color:#fff}
 .btn:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(77,124,255,.35)}
 .btn.ghost{background:none;color:var(--text)}
-.photo{justify-self:center;width:min(320px,70vw);aspect-ratio:4/5;border-radius:28px 28px 120px 28px;overflow:hidden;position:relative;animation:float 6s ease-in-out infinite;border:1px solid var(--line);background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.photo{justify-self:center;width:320px;aspect-ratio:4/5;border-radius:28px 28px 120px 28px;overflow:hidden;position:relative;animation:float 6s ease-in-out infinite;border:1px solid var(--line);background:linear-gradient(135deg,var(--accent),var(--accent2))} /* photo width 320px; corners: top-left, top-right, bottom-right, bottom-left */
 .photo img{width:100%;height:100%;object-fit:cover}
-.photo .ini{display:grid;place-items:center;height:100%;font:800 6rem var(--head)}
+.photo .ini{display:grid;place-items:center;height:100%;font:800 96px var(--head)} /* initials size */
 @keyframes float{50%{transform:translateY(-14px)}}
-.stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;border-top:1px solid var(--line);padding-top:34px}
-.stat b{display:block;font:800 2.8rem var(--head);color:var(--accent)}
-.stat span{color:var(--muted);font-size:.92rem}
+.stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;border-top:1px solid var(--line);padding-top:34px} /* the 3 counting numbers */
+.stat b{display:block;font:800 45px var(--head);color:var(--accent)}  /* number size */
+.stat span{color:var(--muted);font-size:15px}                          /* label size */
 
-/* skills marquee */
+/* ##### 6. SKILLS STRIP (scrolling words) ##### */
 .marq{overflow:hidden;border-block:1px solid var(--line);background:var(--bg2);padding:16px 0}
-.track{display:flex;gap:48px;width:max-content;animation:scroll 26s linear infinite}
-.track span{font:700 1.1rem var(--head);color:var(--muted);white-space:nowrap}
+.track{display:flex;gap:48px;width:max-content;animation:scroll 26s linear infinite} /* 48px = gap between skills; 26s = speed (bigger = slower) */
+.track span{font:700 18px var(--head);color:var(--muted);white-space:nowrap}
 @keyframes scroll{to{transform:translateX(-50%)}}
 
-/* timeline */
-.tl{position:relative;padding-left:34px}
-.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:0;width:2px;background:var(--line)}
-.tl .fill{position:absolute;left:7px;top:6px;width:2px;height:0;background:linear-gradient(var(--accent),var(--accent2))}
-.ev{position:relative;margin-bottom:38px}
-.ev::before{content:"";position:absolute;left:-34px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);transition:.4s}
+/* ##### 7. TIMELINE ("A storyline of me!") ##### */
+.tl{position:relative;padding-left:60px}  /* 60px = space between the line/dots and the text */
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:0;width:2px;background:var(--line)}  /* grey line: left 7px, thickness 2px */
+.tl .fill{position:absolute;left:7px;top:6px;width:2px;height:0;background:linear-gradient(var(--accent),var(--accent2))} /* colored line that grows on scroll (keep left same as above) */
+.ev{position:relative;margin-bottom:38px}   /* 38px = space between years */
+.ev::before{content:"";position:absolute;left:-60px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);transition:.4s} /* the dot: left must equal the padding-left above; 16px = dot size */
 .ev.in::before{background:var(--accent2);border-color:var(--accent2);box-shadow:0 0 0 6px rgba(255,122,89,.18)}
-.yr{font:800 1.9rem var(--head);color:var(--accent)}
-.ev h3{font-size:1.25rem;margin:2px 0}
-.where{color:var(--accent2);font-size:.9rem;font-weight:600}
-.ev p{color:var(--muted);max-width:620px;margin-top:6px}
+.yr{font:800 30px var(--head);color:var(--accent)}  /* year number (2023...) */
+.ev h3{font-size:20px;margin:2px 0}                  /* title (Prologue...) */
+.where{color:var(--accent2);font-size:14px;font-weight:600} /* orange place line */
+.ev p{color:var(--muted);max-width:620px;margin-top:6px}    /* description text */
 .ev.future .yr{color:var(--muted)}
 
-/* cards */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
-.card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:transform .3s,border-color .3s}
+/* ##### 8. CARDS (used by CERTIFICATES and PROJECTS) ##### */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px} /* 290px = minimum card width; 20px = gap between cards */
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:transform .3s,border-color .3s} /* padding 24px = space inside card; radius 16px = roundness */
 .card:hover{transform:translateY(-6px);border-color:var(--accent)}
-.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem}
-.code{background:rgba(77,124,255,.15);color:var(--accent);padding:2px 10px;border-radius:20px;font-weight:600}
-.card h3{font-size:1.3rem}
-.card p{color:var(--muted);font-size:.95rem}
-.hl{font:800 1.1rem var(--head);color:var(--accent2)}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:14px} /* top row: issuer / year */
+.code{background:rgba(77,124,255,.15);color:var(--accent);padding:2px 10px;border-radius:20px;font-weight:600} /* blue pill label */
+.card h3{font-size:21px}                    /* card title */
+.card p{color:var(--muted);font-size:15px}  /* card description */
+.hl{font:800 18px var(--head);color:var(--accent2)} /* orange result highlight (projects) */
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
-.tags span{border:1px solid var(--line);padding:2px 10px;border-radius:20px;font-size:.78rem;color:var(--muted)}
-.card .btn{margin-top:8px;text-align:center;padding:9px 16px;font-size:.92rem}
+.tags span{border:1px solid var(--line);padding:2px 10px;border-radius:20px;font-size:12px;color:var(--muted)} /* small tag pills */
+.card .btn{margin-top:8px;text-align:center;padding:9px 16px;font-size:15px} /* "View PDF" button */
 .cover{height:120px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2)) center/cover;margin-bottom:4px}
 
-/* contact */
-.contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+/* ##### 9. CONTACT ##### */
+.contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px} /* 220px = min box width; 16px = gap */
 .contacts a,.contacts button{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:left;color:var(--text);font:inherit;cursor:pointer;transition:.3s}
 .contacts a:hover,.contacts button:hover{border-color:var(--accent2);transform:translateY(-4px)}
 .contacts small{display:block;color:var(--muted)}
-.contacts b{font-family:var(--head);font-size:1.1rem;word-break:break-all}
-footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px solid var(--line);font-size:.9rem}
+.contacts b{font-family:var(--head);font-size:18px;word-break:break-all}
+
+/* ##### 10. FOOTER & "Copied!" POPUP ##### */
+footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px solid var(--line);font-size:14px}
 #toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,90px);background:var(--accent2);color:#111;padding:10px 22px;border-radius:30px;font-weight:600;transition:.4s;z-index:60}
 #toast.show{transform:translate(-50%,0)}
 
-/* scroll reveal */
+/* ##### 11. SCROLL-IN ANIMATION (fade up) ##### */
 .rv{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}
 .rv.in{opacity:1;transform:none}
 
+/* ##### 12. PHONE VERSION (screens 780px wide or less) ##### */
 @media(max-width:780px){
-  #home{grid-template-columns:1fr;text-align:left}
-  .photo{order:-1;width:200px}
+  #home{grid-template-columns:1fr}
+  .photo{order:-1;width:200px}      /* photo size on phones */
+  #heroName{font-size:48px}         /* name size on phones */
+  h2{font-size:32px}                /* section title size on phones */
+  .ld-name{font-size:36px}
   #burger{display:block}
   #links{position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);max-height:0;overflow:hidden;transition:max-height .35s}
   #links.open{max-height:360px;border-bottom:1px solid var(--line)}
@@ -129,149 +152,261 @@ footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px sol
 
 <div class="glow g1"></div><div class="glow g2"></div>
 
-<div id="loader"><div class="ld-name" id="ldName"></div><div class="ld-bar"><i id="ldBar"></i></div><div id="ldNum">0%</div></div>
+<!-- ##################################################
+     SECTION: LOADING SCREEN
+     Change the name shown while the page loads.
+     ################################################## -->
+<div id="loader"><div class="ld-name">Ardhan</div><div class="ld-bar"><i id="ldBar"></i></div><div id="ldNum">0%</div></div>
 
+<!-- ##################################################
+     SECTION: TOP MENU BAR
+     Logo text top-left. Menu names are the link texts (keep the href="#..." parts unchanged).
+     ################################################## -->
 <header>
-  <a class="logo" href="#home" id="logo"></a>
-  <nav id="links"></nav>
+  <a class="logo" href="#home">Ardhan</a>
+  <nav id="links">
+    <a href="#home">Home</a>
+    <a href="#about">About Me</a>
+    <a href="#certificates">Certificates</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </nav>
   <button id="burger" aria-label="Menu">&#9776;</button>
 </header>
 
 <main>
+
+<!-- ##################################################
+     SECTION: HOME (hero): greeting, name, intro, buttons, photo, counting numbers
+     The typing words ("I am a ...") are in the JavaScript at the very bottom (ROLES).
+     ################################################## -->
   <section id="home">
     <div>
-      <p class="hi" id="hi"></p>
-      <h1 id="heroName"></h1>
+      <p class="hi">Hello! Nice to meet you.</p>
+      <!-- NAME: one <b class="w"> per line. Put each word in its own <b class="w">...</b> -->
+      <h1 id="heroName"><b class="w">Ardhan</b><b class="w">Kawakibi</b></h1>
       <p class="role">I am a <b id="typed"></b></p>
-      <p class="intro" id="intro"></p>
-      <div class="btns" id="heroBtns"></div>
+      <p class="intro">Penultimate-year Strategic Management student at Universitas Brawijaya with hands-on experience in consulting, market research, and operational improvement. I lead multidisciplinary teams across 5 organizations and projects, build data-driven programs and strategies, and deliver measurable organizational impact.</p>
+      <div class="btns">
+        <a class="btn fill" href="#contact">Contact Me</a>
+        <!-- CV BUTTON (optional): upload CV.pdf to GitHub, then copy this line right under the Contact Me button:  <a class="btn ghost" href="CV.pdf" download>Download CV</a> -->
+      </div>
     </div>
-    <div class="photo" id="photo"></div>
-    <div class="stats" id="stats"></div>
+
+    <!-- PHOTO: to use a real photo, replace <div class="ini">AK</div> below with <img src="photo.jpg" alt="My photo"> (upload photo.jpg to GitHub first) -->
+    <div class="photo"><img src="IMG_1749(3) - M Ardhan Kawakibi.jpg" alt="My photo">AK</div></div>
+
+    <!-- COUNTING NUMBERS: data-to = the number it counts up to; data-suf = text after it (like +). Last text = label -->
+    <div class="stats">
+      <div class="stat rv"><b class="count" data-to="2" data-suf="">0</b><span>Internship experiences</span></div>
+      <div class="stat rv"><b class="count" data-to="2" data-suf="">0</b><span>Real consulting projects</span></div>
+      <div class="stat rv"><b class="count" data-to="4" data-suf="+">0</b><span>Years of leading experience</span></div>
+    </div>
   </section>
 
-  <div class="marq"><div class="track" id="track"></div></div>
+<!-- ##################################################
+     SECTION: SKILLS STRIP (scrolling words)
+     One <span> per skill. The page repeats them automatically.
+     ################################################## -->
+  <div class="marq"><div class="track" id="track">
+    <span>PowerBI</span>
+    <span>Tableau</span>
+    <span>Presentation</span>
+    <span>Decking</span>
+    <span>Storytelling</span>
+    <span>Microsoft Office</span>
+    <span>Google Workspace</span>
+    <span>OBS</span>
+    <span>Figma</span>
+    <span>Communication</span>
+    <span>Teamwork</span>
+    <span>Stakeholder Management</span>
+    <span>Project Management</span>
+    <span>Research</span>
+    <span>Consulting</span>
+  </div></div>
 
-  <section id="about"><h2 class="rv" id="aboutT"></h2><p class="sub rv" id="aboutS"></p><div class="tl" id="tl"><div class="fill" id="tlFill"></div></div></section>
-  <section id="certificates"><h2 class="rv" id="certT"></h2><p class="sub rv" id="certS"></p><div class="grid" id="certs"></div></section>
-  <section id="projects"><h2 class="rv" id="projT"></h2><p class="sub rv" id="projS"></p><div class="grid" id="projs"></div></section>
-  <section id="contact"><h2 class="rv" id="contT"></h2><p class="sub rv" id="contS"></p><div class="contacts" id="contacts"></div></section>
+<!-- ##################################################
+     SECTION: TIMELINE: "A storyline of me!"
+     Each <div class="ev rv"> block is ONE year. Copy a whole block to add a year, delete one to remove it.
+     The last block has class "future" (greyed out); remove the word "future" to make it normal.
+     ################################################## -->
+  <section id="about">
+    <h2 class="rv">A storyline of me!</h2>
+    <p class="sub rv">Between many experiences, there's a principle I stand for: every each of path you crossed, there's more than just an experience, there's new knowledge, new perspective, new connection, then will light by itself your ways.</p>
+    <div class="tl" id="tl">
+      <div class="fill" id="tlFill"></div>
+      <div class="ev rv">
+        <div class="yr">2023</div>
+        <h3>Prologue</h3>
+        <div class="where">HK IBS</div>
+        <p>I'm a high-school student who's excited to explore new things in a new city I've never been before.</p>
+      </div>
+      <div class="ev rv">
+        <div class="yr">2024</div>
+        <h3>What's this?</h3>
+        <div class="where">Management Universitas Brawijaya</div>
+        <p>"So here we are." As I said to myself, trying my hand on anything, wondering "Will I forever be like this?"</p>
+      </div>
+      <div class="ev rv">
+        <div class="yr">2025</div>
+        <h3>Gamechanger</h3>
+        <div class="where">First Internship &amp; Leading Projects</div>
+        <p>"Thought I must try more than my friends." Applying for internship in my holidays, contesting to an open tender project. Gained trust, then came, tons of new opportunities.</p>
+      </div>
+      <div class="ev rv">
+        <div class="yr">2026</div>
+        <h3>Executive era</h3>
+        <div class="where">Leading Organizations &amp; Exposed to Professional</div>
+        <p>Here I am, being a core team in 2 scaled-organizations, with various experience in (literally) anything, decided to focus on Business Development &amp; Strategy</p>
+      </div>
+      <div class="ev rv future">
+        <div class="yr">2027</div>
+        <h3>Let's explore.</h3>
+      </div>
+    </div>
+  </section>
+
+<!-- ##################################################
+     SECTION: CERTIFICATES
+     Each <div class="card rv"> is ONE certificate. Copy a whole card to add another.
+     Links must start with https:// . Delete the whole <a class="btn ghost"...> line if there is no link.
+     ################################################## -->
+  <section id="certificates">
+    <h2 class="rv">Certificates</h2>
+    <p class="sub rv">Certificates I got</p>
+    <div class="grid">
+      <!-- CERTIFICATE 1 -->
+      <div class="card rv">
+        <div class="meta"><span>Organizer</span><span>1999</span></div>
+        <h3>Certificate title</h3>
+        <div class="tags"><span>Skill 1</span><span>Skill 2</span></div>
+        <a class="btn ghost" href="https://drive.google.com" target="_blank" rel="noopener">View Certificate</a>
+      </div>
+      <!-- CERTIFICATE 2 -->
+      <div class="card rv">
+        <div class="meta"><span>XXX</span><span>XXX</span></div>
+        <h3>XXX</h3>
+        <div class="tags"><span>XXX</span><span>XXX</span></div>
+      </div>
+      <!-- CERTIFICATE 3 -->
+      <div class="card rv">
+        <div class="meta"><span>XXX</span><span>XXX</span></div>
+        <h3>XXX</h3>
+        <div class="tags"><span>XXX</span><span>XXX</span></div>
+      </div>
+    </div>
+  </section>
+
+<!-- ##################################################
+     SECTION: PROJECTS
+     Each <div class="card rv"> is ONE project. Copy a whole card to add another.
+     "View PDF" points to a file in your GitHub projects/ folder. Delete that line if there is no PDF.
+     ################################################## -->
+  <section id="projects">
+    <h2 class="rv">Projects</h2>
+    <p class="sub rv">Projects I did</p>
+    <div class="grid">
+      <!-- PROJECT 1 -->
+      <div class="card rv">
+        <!-- OPTIONAL COVER IMAGE: <div class="cover" style="background-image:url('projects/cover1.jpg')"></div> -->
+        <div class="meta"><span class="code">Key experience</span><span>1999</span></div>
+        <h3>Experience title</h3>
+        <p>Description</p>
+        <div class="hl">Achieved results highlight</div>
+        <div class="tags"><span>Sub-experience 1</span><span>Sub-experience 2</span></div>
+        <a class="btn fill" href="projects/operations.pdf" target="_blank" rel="noopener">View PDF</a>
+      </div>
+      <!-- PROJECT 2 -->
+      <div class="card rv">
+        <!-- OPTIONAL COVER IMAGE: <div class="cover" style="background-image:url('projects/cover1.jpg')"></div> -->
+        <div class="meta"><span class="code">XXX</span><span>XXX</span></div>
+        <h3>XXX</h3>
+        <p>XXX</p>
+        <div class="hl">XXX</div>
+        <div class="tags"><span>XXX</span><span>XXX</span></div>
+        <a class="btn fill" href="projects/operations.pdf" target="_blank" rel="noopener">View PDF</a>
+      </div>
+      <!-- PROJECT 3 -->
+      <div class="card rv">
+        <!-- OPTIONAL COVER IMAGE: <div class="cover" style="background-image:url('projects/cover1.jpg')"></div> -->
+        <div class="meta"><span class="code">XXX</span><span>XXX</span></div>
+        <h3>XXX</h3>
+        <p>XXX</p>
+        <div class="hl">XXX</div>
+        <div class="tags"><span>XXX</span><span>XXX</span></div>
+        <a class="btn fill" href="projects/operations.pdf" target="_blank" rel="noopener">View PDF</a>
+      </div>
+      <!-- PROJECT 4 -->
+      <div class="card rv">
+        <!-- OPTIONAL COVER IMAGE: <div class="cover" style="background-image:url('projects/cover1.jpg')"></div> -->
+        <div class="meta"><span class="code">XXX</span><span>XXX</span></div>
+        <h3>XXX</h3>
+        <p>XXX</p>
+        <div class="hl">XXX</div>
+        <div class="tags"><span>XXX</span><span>XXX</span></div>
+        <a class="btn fill" href="projects/program-strategy.pdf" target="_blank" rel="noopener">View PDF</a>
+      </div>
+    </div>
+  </section>
+
+<!-- ##################################################
+     SECTION: CONTACT
+     Links open in a new tab. The email box has data-copy="..." and copies the address when clicked.
+     ################################################## -->
+  <section id="contact">
+    <h2 class="rv">Let's Work Together</h2>
+    <p class="sub rv">Open to internships, consulting projects and collaborations. Pick whichever is easiest.</p>
+    <div class="contacts">
+      <a class="rv" href="https://www.linkedin.com/in/ardhan-kawakibi/" target="_blank" rel="noopener"><small>LinkedIn</small><b>Ardhan Kawakibi</b></a>
+      <button class="rv" data-copy="ma.kawakibi@gmail.com"><small>Email</small><b>ma.kawakibi@gmail.com</b></button>
+      <a class="rv" href="https://instagram.com/ardhanamigo" target="_blank" rel="noopener"><small>Instagram</small><b>@ardhanamigo</b></a>
+      <a class="rv" href="https://wa.me/6289522910401" target="_blank" rel="noopener"><small>WhatsApp</small><b>+62 895-2291-0401</b></a>
+    </div>
+  </section>
 </main>
 
-<footer id="foot"></footer>
+<!-- ##################################################
+     SECTION: FOOTER
+     ################################################## -->
+<footer>Thank you for visiting, looking forward to collaborate with you soon!</footer>
 <div id="toast">Copied!</div>
 
 <script>
-/* =====================================================================
-   EDIT EVERYTHING HERE. You do not need to touch the code below this block.
-   Keep the quotes "" and commas , exactly as they are.
-   ===================================================================== */
-const SITE = {
-  name: "Ardhan Kawakibi",
-  logo: "Ardhan",                       // short text shown top-left and on the loading screen
-  greeting: "Hello! Nice to meet you.",
-  roles: ["Management Student", "Consulting Enthusiast", "Market Research Analyst", "Team Leader"],
-  intro: "Penultimate-year Strategic Management student at Universitas Brawijaya with hands-on experience in consulting, market research, and operational improvement. I lead multidisciplinary teams across 5 organizations and projects, build data-driven programs and strategies, and deliver measurable organizational impact.",
-  photo: "",                            // e.g. "photo.jpg" (upload the file to GitHub). Empty = initials
-  initials: "AK",
-  cv: "",                         // upload your CV with this exact name. Empty "" hides the button
-
-  stats: [                              // value = number that counts up
-    { value: 2, suffix: "", label: "Internship experiences" },
-    { value: 2, suffix: "", label: "Real consulting projects" },
-    { value: 4, suffix: "+", label: "Years of leading experience" }
-  ],
-
-  skills: ["PowerBI", "Tableau", "Presentation", "Decking", "Storytelling", "Microsoft Office", "Google Workspace", "OBS", "Figma", "Communication", "Teamwork", "Stakeholder Management", "Project Management", "Research", "Consulting"],
-
-  about: { title: "A storyline of me!", text: "Between many experiences, there's a principle I stand for: every each of path you crossed, there's more than just an experience, there's new knowledge, new perspective, new connection, then will light by itself your ways." },
-  timeline: [
-    { year: "2023", title: "Prologue", place: "HK IBS", text: "I'm a high-school student who's excited to explore new things in a new city I've never been before." },
-    { year: "2024", title: "What's this?", place: "Management Universitas Brawijaya", text: "\"So here we are.\" As I said to myself, trying my hand on anything, wondering \"Will I forever be like this?\"" },
-    { year: "2025", title: "Gamechanger", place: "First Internship & Leading Projects", text: "\"Thought I must try more than my friends.\" Applying for internship in my holidays, contesting to an open tender project. Gained trust, then came, tons of new opportunities." },
-    { year: "2026", title: "Executive era", place: "Leading Organizations & Exposed to Professional", text: "Here I am, being a core team in 2 scaled-organizations, with various experience in (literally) anything, decided to focus on Business Development & Strategy" },
-    { year: "2027", title: "Let's explore.", place: "", text: "", future: true }
-  ],
-
-  certificates: {
-    title: "Certificates", text: "Certificates I got",
-    items: [
-      { name: "Certificate title", issuer: "Organizer", year: "1999", link: "drive.google.com", skills: ["Skill 1", "Skill 2"] },
-      { name: "XXX", issuer: "XXX", year: "XXX", link: "", skills: ["XXX", "XXX"] },
-      { name: "XXX", issuer: "XXX", year: "XXX", link: "", skills: ["XXX", "XXX"] }
-    ]
-  },
-
-  projects: {
-    title: "Projects", text: "Projects I did",
-    items: [
-      { title: "Experience title", code: "Key experience", year: "1999", desc: "Description", stat: "Achieved results highlight", tags: ["Sub-experience 1", "Sub-experience 2"], file: "projects/market-entry.pdf", cover: "" },
-      { title: "XXX", code: "XXX", year: "XXX", desc: "XXX", stat: "XXX", tags: ["XXX", "XXX"], file: "projects/operations.pdf", cover: "" },
-      { title: "XXX", code: "XXX", year: "XXX", desc: "XXX", stat: "XXX", tags: ["XXX", "XXX"], file: "projects/program-strategy.pdf", cover: "" }
-    ]
-  },
-
-  contact: {
-    title: "Let's Work Together", text: "Open to internships, consulting projects and collaborations. Pick whichever is easiest.",
-    items: [
-      { label: "LinkedIn", value: "Ardhan Kawakibi", link: "https://www.linkedin.com/in/ardhan-kawakibi/" },
-      { label: "Email", value: "ma.kawakibi@gmail.com", copy: true },
-      { label: "Instagram", value: "@ardhanamigo", link: "https://instagram.com/ardhanamigo" },
-      { label: "WhatsApp", value: "+62 895-2291-0401", link: "https://wa.me/6289522910401" }
-    ]
-  },
-  footer: "Thank you for visiting, looking forward to collaborate with you soon!"
-};
-/* ======================= END OF EDIT AREA ======================= */
+/* ##### JAVASCRIPT (animations). The only thing to edit: the ROLES list ##### */
+const ROLES = ["Management Student", "Consulting Enthusiast", "Market Research Analyst", "Team Leader"];  /* words that type out after "I am a" */
 
 const $ = s => document.querySelector(s);
-const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const tags = a => (a || []).map(t => `<span>${esc(t)}</span>`).join("");
 
-/* fill content */
-document.title = SITE.name + " | Portfolio";
-$("#ldName").textContent = $("#logo").textContent = SITE.logo;
-$("#hi").textContent = SITE.greeting;
-$("#heroName").innerHTML = SITE.name.split("").map((c, i) => `<span style="transition-delay:${0.9 + i * 0.04}s">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("");
-$("#intro").textContent = SITE.intro;
-$("#photo").innerHTML = SITE.photo ? `<img src="${esc(SITE.photo)}" alt="${esc(SITE.name)}">` : `<div class="ini">${esc(SITE.initials)}</div>`;
-$("#heroBtns").innerHTML = `<a class="btn fill" href="#contact">Contact Me</a>` + (SITE.cv ? `<a class="btn ghost" href="${esc(SITE.cv)}" download>Download CV</a>` : "");
-$("#stats").innerHTML = SITE.stats.map(s => `<div class="stat rv"><b class="count" data-to="${s.value}" data-suf="${esc(s.suffix)}">0</b><span>${esc(s.label)}</span></div>`).join("");
-$("#track").innerHTML = [...SITE.skills, ...SITE.skills].map(s => `<span>${esc(s)}</span>`).join("");
-$("#aboutT").textContent = SITE.about.title; $("#aboutS").textContent = SITE.about.text;
-$("#tl").insertAdjacentHTML("beforeend", SITE.timeline.map(e => `<div class="ev rv${e.future ? " future" : ""}"><div class="yr">${esc(e.year)}</div>${e.title ? `<h3>${esc(e.title)}</h3>` : ""}${e.place ? `<div class="where">${esc(e.place)}</div>` : ""}${e.text ? `<p>${esc(e.text)}</p>` : ""}</div>`).join(""));
-$("#certT").textContent = SITE.certificates.title; $("#certS").textContent = SITE.certificates.text;
-$("#certs").innerHTML = SITE.certificates.items.map(c => `<div class="card rv"><div class="meta"><span>${esc(c.issuer)}</span><span>${esc(c.year)}</span></div><h3>${esc(c.name)}</h3><div class="tags">${tags(c.skills)}</div>${c.link ? `<a class="btn ghost" href="${esc(c.link)}" target="_blank" rel="noopener">View Certificate</a>` : ""}</div>`).join("");
-$("#projT").textContent = SITE.projects.title; $("#projS").textContent = SITE.projects.text;
-$("#projs").innerHTML = SITE.projects.items.map(p => `<div class="card rv">${p.cover ? `<div class="cover" style="background-image:url('${esc(p.cover)}')"></div>` : ""}<div class="meta"><span class="code">${esc(p.code)}</span><span>${esc(p.year)}</span></div><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>${p.stat ? `<div class="hl">${esc(p.stat)}</div>` : ""}<div class="tags">${tags(p.tags)}</div>${p.file ? `<a class="btn fill" href="${esc(p.file)}" target="_blank" rel="noopener">View PDF</a>` : ""}</div>`).join("");
-$("#contT").textContent = SITE.contact.title; $("#contS").textContent = SITE.contact.text;
-$("#contacts").innerHTML = SITE.contact.items.map(c => c.copy
-  ? `<button class="rv" data-copy="${esc(c.value)}"><small>${esc(c.label)}</small><b>${esc(c.value)}</b></button>`
-  : `<a class="rv" href="${esc(c.link)}" target="_blank" rel="noopener"><small>${esc(c.label)}</small><b>${esc(c.value)}</b></a>`).join("");
-$("#foot").textContent = SITE.footer;
-$("#links").innerHTML = [["home", "Home"], ["about", "About Me"], ["certificates", "Certificates"], ["projects", "Projects"], ["contact", "Contact"]].map(l => `<a href="#${l[0]}">${l[1]}</a>`).join("");
-
-/* loading screen */
+/* loading screen counter */
 let p = 0;
 const lt = setInterval(() => {
-  p = Math.min(100, p + Math.random() * 9 + 3);
+  p = Math.min(100, p + Math.random() * 1 + 2 + 4 );
   $("#ldBar").style.width = p + "%"; $("#ldNum").textContent = Math.floor(p) + "%";
   if (p >= 100) { clearInterval(lt); setTimeout(() => { $("#loader").classList.add("done"); document.body.classList.add("ready"); startTyping(); }, 350); }
 }, 80);
 
-/* typing role */
+/* split the big name into letters so they can animate */
+document.querySelectorAll("#heroName .w").forEach((w, wi) => {
+  w.innerHTML = [...w.textContent].map((c, i) => `<span style="transition-delay:${0.9 + (wi * 7 + i) * 0.04}s">${c}</span>`).join("");
+});
+
+/* skills strip: repeat the list once so the loop has no gap */
+$("#track").innerHTML += $("#track").innerHTML;
+
+/* typing effect */
 function startTyping() {
   let r = 0, i = 0, del = false; const el = $("#typed");
   (function tick() {
-    const w = SITE.roles[r];
+    const w = ROLES[r];
     el.textContent = w.slice(0, i);
     if (!del && i === w.length) { del = true; return setTimeout(tick, 1400); }
-    if (del && i === 0) { del = false; r = (r + 1) % SITE.roles.length; }
+    if (del && i === 0) { del = false; r = (r + 1) % ROLES.length; }
     i += del ? -1 : 1; setTimeout(tick, del ? 35 : 75);
   })();
 }
 
-/* scroll reveal + counters */
+/* fade-in on scroll + number counting */
 const io = new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return;
   e.target.classList.add("in");
@@ -281,7 +416,7 @@ const io = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .2 });
 document.querySelectorAll(".rv").forEach(el => io.observe(el));
 
-/* timeline line + active nav */
+/* timeline line growing + highlighted menu item */
 const tl = $("#tl");
 function onScroll() {
   const r = tl.getBoundingClientRect(), h = Math.max(0, Math.min(r.height, innerHeight * .6 - r.top));
@@ -292,7 +427,7 @@ function onScroll() {
 }
 addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
-/* menu, copy */
+/* phone menu button and copy-email */
 $("#burger").onclick = () => $("#links").classList.toggle("open");
 $("#links").onclick = () => $("#links").classList.remove("open");
 document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
