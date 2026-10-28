@@ -1,67 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Your Name | Portfolio</title>
-  <style>
-    :root { --bg:#0f1115; --text:#f2f2f2; --accent:#4f8cff; --card:#1a1d24; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Arial, sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
-    nav { position:sticky; top:0; background:var(--bg); padding:16px 24px; display:flex; gap:20px; border-bottom:1px solid #2a2e38; }
-    nav a { color:var(--text); text-decoration:none; }
-    nav a:hover { color:var(--accent); }
-    section { max-width:900px; margin:0 auto; padding:80px 24px; }
-    h1 { font-size:3rem; margin:0; }
-    h2 { color:var(--accent); }
-    .btn { display:inline-block; background:var(--accent); color:#fff; padding:10px 20px; border-radius:8px; text-decoration:none; }
-    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
-    .card { background:var(--card); padding:20px; border-radius:12px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ COLORS & FONTS: change these to restyle the whole site ============ */
+:root{
+  --bg:#0c1424; --bg2:#121c33; --text:#eef2f7; --muted:#9aa7bf;
+  --accent:#4d7cff; --accent2:#ff7a59; --line:#243152;
+  --head:'Bricolage Grotesque',Arial,sans-serif; --body:'Instrument Sans',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.65;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent2);outline-offset:3px}
+h1,h2,h3{font-family:var(--head);line-height:1.1}
+section{max-width:1040px;margin:0 auto;padding:96px 24px}
+h2{font-size:clamp(2rem,5vw,3rem);margin-bottom:12px}
+.sub{color:var(--muted);max-width:560px;margin-bottom:44px}
+
+/* loader */
+#loader{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:transform .9s cubic-bezier(.77,0,.18,1)}
+#loader.done{transform:translateY(-100%)}
+.ld-name{font:800 clamp(2rem,7vw,4rem)/1 var(--head);letter-spacing:.04em}
+.ld-bar{width:min(260px,60vw);height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.ld-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+#ldNum{color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* nav */
+header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:rgba(12,20,36,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.logo{font:800 1.2rem var(--head)}
+#links{display:flex;gap:26px}
+#links a{color:var(--muted);font-size:.95rem;transition:color .2s}
+#links a:hover,#links a.on{color:var(--text)}
+#links a.on{box-shadow:0 2px 0 var(--accent2)}
+#burger{display:none;background:none;border:0;color:var(--text);font-size:1.6rem;cursor:pointer}
+
+/* hero */
+#home{min-height:100vh;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;gap:40px;padding-top:120px;position:relative}
+.glow{position:fixed;width:520px;height:520px;border-radius:50%;filter:blur(110px);opacity:.28;z-index:-1;animation:drift 14s ease-in-out infinite alternate}
+.g1{background:var(--accent);top:-120px;left:-120px}
+.g2{background:var(--accent2);bottom:-160px;right:-120px;animation-delay:-6s}
+@keyframes drift{to{transform:translate(90px,60px) scale(1.15)}}
+.hi{color:var(--accent2);font-weight:600;margin-bottom:10px}
+#heroName{font-size:clamp(2.6rem,8vw,5.4rem);font-weight:800;letter-spacing:-.02em}
+#heroName span{display:inline-block;opacity:0;transform:translateY(60px) rotate(4deg);transition:.7s cubic-bezier(.2,.8,.2,1)}
+body.ready #heroName span{opacity:1;transform:none}
+.role{font-size:1.15rem;margin:18px 0 8px;min-height:1.8em}
+.role b{color:var(--accent);border-right:2px solid var(--accent2);padding-right:4px}
+.intro{color:var(--muted);max-width:540px}
+.btns{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.btn{padding:12px 24px;border-radius:10px;font-weight:600;border:1px solid var(--accent);transition:.25s;cursor:pointer;font-family:var(--body);font-size:1rem}
+.btn.fill{background:var(--accent);color:#fff}
+.btn:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(77,124,255,.35)}
+.btn.ghost{background:none;color:var(--text)}
+.photo{justify-self:center;width:min(320px,70vw);aspect-ratio:4/5;border-radius:28px 28px 120px 28px;overflow:hidden;position:relative;animation:float 6s ease-in-out infinite;border:1px solid var(--line);background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.photo img{width:100%;height:100%;object-fit:cover}
+.photo .ini{display:grid;place-items:center;height:100%;font:800 6rem var(--head)}
+@keyframes float{50%{transform:translateY(-14px)}}
+.stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;border-top:1px solid var(--line);padding-top:34px}
+.stat b{display:block;font:800 2.8rem var(--head);color:var(--accent)}
+.stat span{color:var(--muted);font-size:.92rem}
+
+/* skills marquee */
+.marq{overflow:hidden;border-block:1px solid var(--line);background:var(--bg2);padding:16px 0}
+.track{display:flex;gap:48px;width:max-content;animation:scroll 26s linear infinite}
+.track span{font:700 1.1rem var(--head);color:var(--muted);white-space:nowrap}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* timeline */
+.tl{position:relative;padding-left:34px}
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:0;width:2px;background:var(--line)}
+.tl .fill{position:absolute;left:7px;top:6px;width:2px;height:0;background:linear-gradient(var(--accent),var(--accent2))}
+.ev{position:relative;margin-bottom:38px}
+.ev::before{content:"";position:absolute;left:-34px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);transition:.4s}
+.ev.in::before{background:var(--accent2);border-color:var(--accent2);box-shadow:0 0 0 6px rgba(255,122,89,.18)}
+.yr{font:800 1.9rem var(--head);color:var(--accent)}
+.ev h3{font-size:1.25rem;margin:2px 0}
+.where{color:var(--accent2);font-size:.9rem;font-weight:600}
+.ev p{color:var(--muted);max-width:620px;margin-top:6px}
+.ev.future .yr{color:var(--muted)}
+
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px}
+.card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:transform .3s,border-color .3s}
+.card:hover{transform:translateY(-6px);border-color:var(--accent)}
+.meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem}
+.code{background:rgba(77,124,255,.15);color:var(--accent);padding:2px 10px;border-radius:20px;font-weight:600}
+.card h3{font-size:1.3rem}
+.card p{color:var(--muted);font-size:.95rem}
+.hl{font:800 1.1rem var(--head);color:var(--accent2)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.tags span{border:1px solid var(--line);padding:2px 10px;border-radius:20px;font-size:.78rem;color:var(--muted)}
+.card .btn{margin-top:8px;text-align:center;padding:9px 16px;font-size:.92rem}
+.cover{height:120px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2)) center/cover;margin-bottom:4px}
+
+/* contact */
+.contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.contacts a,.contacts button{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:left;color:var(--text);font:inherit;cursor:pointer;transition:.3s}
+.contacts a:hover,.contacts button:hover{border-color:var(--accent2);transform:translateY(-4px)}
+.contacts small{display:block;color:var(--muted)}
+.contacts b{font-family:var(--head);font-size:1.1rem;word-break:break-all}
+footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px solid var(--line);font-size:.9rem}
+#toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,90px);background:var(--accent2);color:#111;padding:10px 22px;border-radius:30px;font-weight:600;transition:.4s;z-index:60}
+#toast.show{transform:translate(-50%,0)}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:780px){
+  #home{grid-template-columns:1fr;text-align:left}
+  .photo{order:-1;width:200px}
+  #burger{display:block}
+  #links{position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);max-height:0;overflow:hidden;transition:max-height .35s}
+  #links.open{max-height:360px;border-bottom:1px solid var(--line)}
+  #links a{padding:14px 24px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,#heroName span{opacity:1;transform:none}}
+</style>
 </head>
 <body>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#about">About Me</a>
-    <a href="#certificates">Certificates</a>
-    <a href="#projects">Projects</a>
-    <a href="#contact">Contact</a>
-  </nav>
 
+<div class="glow g1"></div><div class="glow g2"></div>
+
+<div id="loader"><div class="ld-name" id="ldName"></div><div class="ld-bar"><i id="ldBar"></i></div><div id="ldNum">0%</div></div>
+
+<header>
+  <a class="logo" href="#home" id="logo"></a>
+  <nav id="links"></nav>
+  <button id="burger" aria-label="Menu">&#9776;</button>
+</header>
+
+<main>
   <section id="home">
-    <h1>YOUR NAME</h1>
-    <p>Your university | Your major</p>
-    <p>One sentence about what you do.</p>
-    <a class="btn" href="#contact">Contact Me</a>
-  </section>
-
-  <section id="about">
-    <h2>About Me</h2>
-    <p>2024: Write something about this year.</p>
-    <p>2025: Write something about this year.</p>
-    <p>2026: Write something about this year.</p>
-  </section>
-
-  <section id="certificates">
-    <h2>Certificates</h2>
-    <div class="cards">
-      <div class="card"><h3>Certificate Name</h3><p>Issuer, 2025</p></div>
-      <div class="card"><h3>Certificate Name</h3><p>Issuer, 2025</p></div>
+    <div>
+      <p class="hi" id="hi"></p>
+      <h1 id="heroName"></h1>
+      <p class="role">I am a <b id="typed"></b></p>
+      <p class="intro" id="intro"></p>
+      <div class="btns" id="heroBtns"></div>
     </div>
+    <div class="photo" id="photo"></div>
+    <div class="stats" id="stats"></div>
   </section>
 
-  <section id="projects">
-    <h2>Projects</h2>
-    <div class="cards">
-      <div class="card"><h3>Project Title</h3><p>Short description.</p></div>
-      <div class="card"><h3>Project Title</h3><p>Short description.</p></div>
-    </div>
-  </section>
+  <div class="marq"><div class="track" id="track"></div></div>
 
-  <section id="contact">
-    <h2>Contact Me</h2>
-    <p>Email: <a href="mailto:you@email.com" style="color:var(--accent)">you@email.com</a></p>
-    <p><a href="https://linkedin.com/in/your-name" style="color:var(--accent)">LinkedIn</a></p>
-  </section>
+  <section id="about"><h2 class="rv" id="aboutT"></h2><p class="sub rv" id="aboutS"></p><div class="tl" id="tl"><div class="fill" id="tlFill"></div></div></section>
+  <section id="certificates"><h2 class="rv" id="certT"></h2><p class="sub rv" id="certS"></p><div class="grid" id="certs"></div></section>
+  <section id="projects"><h2 class="rv" id="projT"></h2><p class="sub rv" id="projS"></p><div class="grid" id="projs"></div></section>
+  <section id="contact"><h2 class="rv" id="contT"></h2><p class="sub rv" id="contS"></p><div class="contacts" id="contacts"></div></section>
+</main>
+
+<footer id="foot"></footer>
+<div id="toast">Copied!</div>
+
+<script>
+/* =====================================================================
+   EDIT EVERYTHING HERE. You do not need to touch the code below this block.
+   Keep the quotes "" and commas , exactly as they are.
+   ===================================================================== */
+const SITE = {
+  name: "Ardhan Kawakibi",
+  logo: "ARDHAN",                       // short text shown top-left and on the loading screen
+  greeting: "Welcome to my portfolio",
+  roles: ["Strategic Management Student", "Consulting Enthusiast", "Market Research Analyst", "Team Leader"],
+  intro: "Penultimate-year Strategic Management student at Universitas Brawijaya with hands-on experience in consulting, market research, and operational improvement. I lead multidisciplinary teams across 5 organizations and projects, build data-driven programs and strategies, and deliver measurable organizational impact.",
+  photo: "",                            // e.g. "photo.jpg" (upload the file to GitHub). Empty = initials
+  initials: "AK",
+  cv: "CV.pdf",                         // upload your CV with this exact name. Empty "" hides the button
+
+  stats: [                              // value = number that counts up
+    { value: 5, suffix: "+", label: "Organizations & projects led" },
+    { value: 8, suffix: "+", label: "Research & consulting projects" },
+    { value: 3, suffix: "+", label: "Years of experience" }
+  ],
+
+  skills: ["Strategic Analysis", "Market Research", "Consulting", "Operational Improvement", "Team Leadership", "Data-Driven Strategy", "Program Management", "Presentation"],
+
+  about: { title: "About Me & My Journey", text: "Every role taught me something new about people, data and strategy. This is the path so far. (Dummy text: replace with your own story.)" },
+  timeline: [
+    { year: "2023", title: "Started at Universitas Brawijaya", place: "Strategic Management", text: "Began my degree and discovered how strategy connects business theory with real organizational problems." },
+    { year: "2024", title: "First Organization Role", place: "Student Organization (dummy)", text: "Joined a student organization and ran my first multi-team program, learning to coordinate people and deadlines." },
+    { year: "2025", title: "Consulting & Market Research", place: "Consulting Project (dummy)", text: "Worked on market research and operational improvement projects, turning raw data into clear recommendations." },
+    { year: "2026", title: "Leading Multidisciplinary Teams", place: "Leadership Roles (dummy)", text: "Led teams across five organizations and projects, focusing on measurable impact and data-driven programs." },
+    { year: "2027", title: "Still writing the story.", place: "", text: "", future: true }
+  ],
+
+  certificates: {
+    title: "Certificates", text: "Courses and learning experiences. (Dummy data.)",
+    items: [
+      { name: "Business Strategy Fundamentals", issuer: "Coursera", year: "2024", link: "", skills: ["Strategy", "Analysis"] },
+      { name: "Market Research Methods", issuer: "Google", year: "2025", link: "", skills: ["Survey", "Insights"] },
+      { name: "Project Management Basics", issuer: "Dicoding", year: "2025", link: "", skills: ["Planning", "Teamwork"] }
+    ]
+  },
+
+  projects: {
+    title: "Projects", text: "Selected consulting, research and strategy work. (Dummy data.)",
+    items: [
+      { title: "Market Entry Analysis", code: "Consulting", year: "2025", desc: "Analyzed market size, competitors and customer needs for a small business expansion plan.", stat: "3 strategy options delivered", tags: ["Market Research", "SWOT"], file: "projects/market-entry.pdf", cover: "" },
+      { title: "Operational Improvement Study", code: "Operations", year: "2025", desc: "Mapped a workflow, found bottlenecks and proposed changes to speed up daily operations.", stat: "Process time cut by 30%", tags: ["Process Mapping", "Efficiency"], file: "projects/operations.pdf", cover: "" },
+      { title: "Student Program Strategy", code: "Leadership", year: "2026", desc: "Designed and led a data-driven program with a multidisciplinary team of volunteers.", stat: "200+ participants reached", tags: ["Leadership", "Program Design"], file: "projects/program-strategy.pdf", cover: "" }
+    ]
+  },
+
+  contact: {
+    title: "Let's Work Together", text: "Open to internships, consulting projects and collaborations. Pick whichever is easiest.",
+    items: [
+      { label: "LinkedIn", value: "ardhan-kawakibi", link: "https://www.linkedin.com/in/ardhan-kawakibi/" },
+      { label: "Email (click to copy)", value: "your.email@gmail.com", copy: true },
+      { label: "Instagram", value: "@yourusername", link: "https://instagram.com/yourusername" },
+      { label: "WhatsApp", value: "+62 800 0000 0000", link: "https://wa.me/628000000000" }
+    ]
+  },
+  footer: "Built by Ardhan Kawakibi. Thank you for visiting."
+};
+/* ======================= END OF EDIT AREA ======================= */
+
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const tags = a => (a || []).map(t => `<span>${esc(t)}</span>`).join("");
+
+/* fill content */
+document.title = SITE.name + " | Portfolio";
+$("#ldName").textContent = $("#logo").textContent = SITE.logo;
+$("#hi").textContent = SITE.greeting;
+$("#heroName").innerHTML = SITE.name.split("").map((c, i) => `<span style="transition-delay:${0.9 + i * 0.04}s">${c === " " ? "&nbsp;" : esc(c)}</span>`).join("");
+$("#intro").textContent = SITE.intro;
+$("#photo").innerHTML = SITE.photo ? `<img src="${esc(SITE.photo)}" alt="${esc(SITE.name)}">` : `<div class="ini">${esc(SITE.initials)}</div>`;
+$("#heroBtns").innerHTML = `<a class="btn fill" href="#contact">Contact Me</a>` + (SITE.cv ? `<a class="btn ghost" href="${esc(SITE.cv)}" download>Download CV</a>` : "");
+$("#stats").innerHTML = SITE.stats.map(s => `<div class="stat rv"><b class="count" data-to="${s.value}" data-suf="${esc(s.suffix)}">0</b><span>${esc(s.label)}</span></div>`).join("");
+$("#track").innerHTML = [...SITE.skills, ...SITE.skills].map(s => `<span>${esc(s)}</span>`).join("");
+$("#aboutT").textContent = SITE.about.title; $("#aboutS").textContent = SITE.about.text;
+$("#tl").insertAdjacentHTML("beforeend", SITE.timeline.map(e => `<div class="ev rv${e.future ? " future" : ""}"><div class="yr">${esc(e.year)}</div>${e.title ? `<h3>${esc(e.title)}</h3>` : ""}${e.place ? `<div class="where">${esc(e.place)}</div>` : ""}${e.text ? `<p>${esc(e.text)}</p>` : ""}</div>`).join(""));
+$("#certT").textContent = SITE.certificates.title; $("#certS").textContent = SITE.certificates.text;
+$("#certs").innerHTML = SITE.certificates.items.map(c => `<div class="card rv"><div class="meta"><span>${esc(c.issuer)}</span><span>${esc(c.year)}</span></div><h3>${esc(c.name)}</h3><div class="tags">${tags(c.skills)}</div>${c.link ? `<a class="btn ghost" href="${esc(c.link)}" target="_blank" rel="noopener">View Certificate</a>` : ""}</div>`).join("");
+$("#projT").textContent = SITE.projects.title; $("#projS").textContent = SITE.projects.text;
+$("#projs").innerHTML = SITE.projects.items.map(p => `<div class="card rv">${p.cover ? `<div class="cover" style="background-image:url('${esc(p.cover)}')"></div>` : ""}<div class="meta"><span class="code">${esc(p.code)}</span><span>${esc(p.year)}</span></div><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p>${p.stat ? `<div class="hl">${esc(p.stat)}</div>` : ""}<div class="tags">${tags(p.tags)}</div>${p.file ? `<a class="btn fill" href="${esc(p.file)}" target="_blank" rel="noopener">View PDF</a>` : ""}</div>`).join("");
+$("#contT").textContent = SITE.contact.title; $("#contS").textContent = SITE.contact.text;
+$("#contacts").innerHTML = SITE.contact.items.map(c => c.copy
+  ? `<button class="rv" data-copy="${esc(c.value)}"><small>${esc(c.label)}</small><b>${esc(c.value)}</b></button>`
+  : `<a class="rv" href="${esc(c.link)}" target="_blank" rel="noopener"><small>${esc(c.label)}</small><b>${esc(c.value)}</b></a>`).join("");
+$("#foot").textContent = SITE.footer;
+$("#links").innerHTML = [["home", "Home"], ["about", "About Me"], ["certificates", "Certificates"], ["projects", "Projects"], ["contact", "Contact"]].map(l => `<a href="#${l[0]}">${l[1]}</a>`).join("");
+
+/* loading screen */
+let p = 0;
+const lt = setInterval(() => {
+  p = Math.min(100, p + Math.random() * 9 + 3);
+  $("#ldBar").style.width = p + "%"; $("#ldNum").textContent = Math.floor(p) + "%";
+  if (p >= 100) { clearInterval(lt); setTimeout(() => { $("#loader").classList.add("done"); document.body.classList.add("ready"); startTyping(); }, 350); }
+}, 80);
+
+/* typing role */
+function startTyping() {
+  let r = 0, i = 0, del = false; const el = $("#typed");
+  (function tick() {
+    const w = SITE.roles[r];
+    el.textContent = w.slice(0, i);
+    if (!del && i === w.length) { del = true; return setTimeout(tick, 1400); }
+    if (del && i === 0) { del = false; r = (r + 1) % SITE.roles.length; }
+    i += del ? -1 : 1; setTimeout(tick, del ? 35 : 75);
+  })();
+}
+
+/* scroll reveal + counters */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add("in");
+  const c = e.target.querySelector(".count");
+  if (c && !c.done) { c.done = 1; const to = +c.dataset.to, t0 = performance.now(); (function f(t) { const k = Math.min(1, (t - t0) / 1500); c.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + c.dataset.suf; if (k < 1) requestAnimationFrame(f); })(t0); }
+  io.unobserve(e.target);
+}), { threshold: .2 });
+document.querySelectorAll(".rv").forEach(el => io.observe(el));
+
+/* timeline line + active nav */
+const tl = $("#tl");
+function onScroll() {
+  const r = tl.getBoundingClientRect(), h = Math.max(0, Math.min(r.height, innerHeight * .6 - r.top));
+  $("#tlFill").style.height = h + "px";
+  let cur = "home";
+  document.querySelectorAll("section").forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .4) cur = s.id; });
+  document.querySelectorAll("#links a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + cur));
+}
+addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
+/* menu, copy */
+$("#burger").onclick = () => $("#links").classList.toggle("open");
+$("#links").onclick = () => $("#links").classList.remove("open");
+document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
+  (navigator.clipboard ? navigator.clipboard.writeText(b.dataset.copy) : Promise.resolve()).finally(() => {
+    $("#toast").classList.add("show"); setTimeout(() => $("#toast").classList.remove("show"), 1600);
+  });
+});
+</script>
 </body>
 </html>
