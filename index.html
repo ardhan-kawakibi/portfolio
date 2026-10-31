@@ -40,13 +40,14 @@ section{max-width:1040px;margin:0 auto;padding:96px 24px} /* max-width = page wi
 h2{font-size:40px;margin-bottom:12px}                      /* section titles (About, Certificates...) */
 .sub{color:var(--muted);max-width:560px;margin-bottom:44px} /* grey text under each section title; 44px = gap before content */
 
-/* ##### 3. LOADING SCREEN ##### */
-#loader{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:transform .9s cubic-bezier(.77,0,.18,1)}
+/* ##### 3. LOADING PAGE (SECTION 1: Welcome & Intro, part A) ##### */
+#loader{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:transform .8s cubic-bezier(.77,0,.18,1)} /* .8s = how long the slide-up takes */
 #loader.done{transform:translateY(-100%)}
-.ld-name{font:800 56px/1 var(--head);letter-spacing:2px} /* name on loading screen: 56px */
-.ld-bar{width:260px;height:3px;background:var(--line);border-radius:3px;overflow:hidden} /* progress bar: 260px wide, 3px thick */
-.ld-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-#ldNum{color:var(--muted);font-variant-numeric:tabular-nums}
+.ld-text{text-align:center;color:#fff;padding:0 24px}   /* #fff = white text */
+.ld-1{font:800 72px/1.1 var(--head)}                      /* "Hello!" size */
+.ld-2{font:500 30px/1.3 var(--head);margin-top:12px}      /* "Nice to meet you." size; 12px = gap under "Hello!" */
+.ld-1,.ld-2{opacity:0;transform:translateY(14px);transition:opacity .8s ease,transform .8s ease}  /* start hidden; timing is controlled in the JavaScript */
+.ld-1.show,.ld-2.show{opacity:1;transform:none}
 
 /* ##### 4. TOP MENU BAR ##### */
 header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:14px 24px;background:rgba(12,20,36,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)} /* padding 14px 24px = bar height/side space */
@@ -57,12 +58,21 @@ header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-conte
 #links a.on{box-shadow:0 2px 0 var(--accent2)}
 #burger{display:none;background:none;border:0;color:var(--text);font-size:26px;cursor:pointer}
 
-/* ##### 5. HERO / HOME (name, photo, buttons, numbers) ##### */
-#home{min-height:100vh;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;gap:40px;padding-top:120px;position:relative} /* gap 40px = space between text and photo */
-.glow{position:fixed;width:520px;height:520px;border-radius:50%;filter:blur(110px);opacity:.28;z-index:-1;animation:drift 14s ease-in-out infinite alternate} /* blurry background light */
-.g1{background:var(--accent);top:-120px;left:-120px}
-.g2{background:var(--accent2);bottom:-160px;right:-120px;animation-delay:-6s}
-@keyframes drift{to{transform:translate(90px,60px) scale(1.15)}}
+/* ##### 5. LANDING PAGE (SECTION 1: Welcome & Intro, part B) ##### */
+#home{min-height:100vh;display:grid;grid-template-columns:1.3fr 1fr;align-items:center;gap:40px;padding-top:120px;position:relative;z-index:1} /* gap 40px = space between text and photo */
+/* BACKGROUND LIGHTS: the blurry colored circles. They are created and moved by the JavaScript (search "LIGHTS" at the bottom) */
+.glow{position:fixed;top:0;left:0;border-radius:50%;filter:blur(120px);opacity:0;z-index:-1;pointer-events:none;will-change:transform,opacity} /* blur 120px = softness */
+
+/* LANDING SLIDESHOW: photos behind the landing page, dimmed, fading out at the bottom */
+.hero-wrap{position:relative}
+.hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;opacity:0;transition:opacity 1.5s ease;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 100%)}   /* 45% = where the fade-out starts (0% = top, 100% = bottom) */
+body.ready .hero-bg{opacity:1}
+.hs{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 25%;filter:brightness(.4) saturate(.9);opacity:0;transform:scale(1.08);transition:opacity var(--fade,1500ms) ease-in-out,transform 8s ease-out} /* brightness .4 = dimness (0 = black, 1 = original); 25% = which part of the photo stays in view; 1.08 = slow zoom */
+.hs.on{opacity:1;transform:scale(1)}
+#home{text-shadow:0 2px 16px rgba(0,0,0,.55)}   /* keeps text readable over photos */
+#home .intro{color:#c3cde0}
 .hi{color:var(--accent2);font-weight:600;margin-bottom:10px}   /* "Hello! Nice to meet you." */
 #heroName{font-size:86px;font-weight:800;letter-spacing:-2px}   /* BIG NAME size: 86px */
 #heroName span{display:inline-block;opacity:0;transform:translateY(60px) rotate(4deg);transition:.7s cubic-bezier(.2,.8,.2,1)}
@@ -84,26 +94,32 @@ body.ready #heroName span{opacity:1;transform:none}
 .stat b{display:block;font:800 45px var(--head);color:var(--accent)}  /* number size */
 .stat span{color:var(--muted);font-size:15px}                          /* label size */
 
-/* ##### 6. SKILLS STRIP (scrolling words) ##### */
+/* ##### 6. SKILLS STRIP (SECTION 2) ##### */
 .marq{overflow:hidden;border-block:1px solid var(--line);background:var(--bg2);padding:16px 0}
 .track{display:flex;gap:48px;width:max-content;animation:scroll 26s linear infinite} /* 48px = gap between skills; 26s = speed (bigger = slower) */
 .track span{font:700 18px var(--head);color:var(--muted);white-space:nowrap}
 @keyframes scroll{to{transform:translateX(-50%)}}
 
-/* ##### 7. TIMELINE ("A storyline of me!") ##### */
-.tl{position:relative;padding-left:60px}  /* 60px = space between the line/dots and the text */
-.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:0;width:2px;background:var(--line)}  /* grey line: left 7px, thickness 2px */
-.tl .fill{position:absolute;left:7px;top:6px;width:2px;height:0;background:linear-gradient(var(--accent),var(--accent2))} /* colored line that grows on scroll (keep left same as above) */
-.ev{position:relative;margin-bottom:38px}   /* 38px = space between years */
-.ev::before{content:"";position:absolute;left:-60px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);transition:.4s} /* the dot: left must equal the padding-left above; 16px = dot size */
+/* ##### 7. STORYLINE (SECTION 3): photos | line + dots | text ##### */
+.tl{position:relative;--ph:240px;--g1:40px;--g2:44px}  /* --ph = photo width; --g1 = space between photos and the line; --g2 = space between the dot and the text */
+.tl::before{content:"";position:absolute;left:calc(var(--ph) + var(--g1) + 7px);top:6px;bottom:0;width:2px;background:var(--line)}  /* grey line (7px = centers it on the 16px dot) */
+.tl .fill{position:absolute;left:calc(var(--ph) + var(--g1) + 7px);top:6px;width:2px;height:0;background:linear-gradient(var(--accent),var(--accent2))} /* colored line that grows on scroll */
+.ev{position:relative;margin-bottom:64px;display:grid;grid-template-columns:var(--ph) 1fr;column-gap:calc(var(--g1) + 16px + var(--g2));align-items:start}  /* 64px = space between years */
+.ev::before{content:"";position:absolute;left:calc(var(--ph) + var(--g1));top:8px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);transition:.4s} /* the dot; 16px = dot size */
 .ev.in::before{background:var(--accent2);border-color:var(--accent2);box-shadow:0 0 0 6px rgba(255,122,89,.18)}
-.yr{font:800 30px var(--head);color:var(--accent)}  /* year number (2023...) */
-.ev h3{font-size:20px;margin:2px 0}                  /* title (Prologue...) */
+.yr{font:800 30px var(--head);color:var(--accent)}  /* year number */
+.ev h3{font-size:20px;margin:2px 0}                  /* title */
 .where{color:var(--accent2);font-size:14px;font-weight:600} /* orange place line */
-.ev p{color:var(--muted);max-width:620px;margin-top:6px}    /* description text */
+.ev p{color:var(--muted);max-width:620px;margin-top:6px}    /* description */
 .ev.future .yr{color:var(--muted)}
+/* storyline photo stack (tap to flip) */
+.stack{position:relative;width:var(--ph);aspect-ratio:3/4;cursor:pointer;--drop:520ms;-webkit-tap-highlight-color:transparent}  /* 3/4 = photo shape */
+.pic{position:absolute;inset:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(135deg,#1c2b52,#3a2a3d);display:grid;place-items:center;padding:12px;text-align:center;color:var(--muted);font-size:12px;box-shadow:0 14px 30px rgba(0,0,0,.35);transition:transform var(--drop) cubic-bezier(.3,.7,.3,1),opacity var(--drop) ease}
+.pic::before{content:attr(data-name)}  /* placeholder label shown until the real photo exists */
+.pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hint{margin-top:30px;width:var(--ph);text-align:center;color:var(--muted);font-size:13px}  /* "Tap to flip" caption */
 
-/* ##### 8. CARDS (used by CERTIFICATES and PROJECTS) ##### */
+/* ##### 8. CARDS (SECTION 4: Certificates, SECTION 5: Projects) ##### */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px} /* 290px = minimum card width; 20px = gap between cards */
 .card{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px;transition:transform .3s,border-color .3s} /* padding 24px = space inside card; radius 16px = roundness */
 .card:hover{transform:translateY(-6px);border-color:var(--accent)}
@@ -117,15 +133,20 @@ body.ready #heroName span{opacity:1;transform:none}
 .card .btn{margin-top:8px;text-align:center;padding:9px 16px;font-size:15px} /* "View PDF" button */
 .cover{height:120px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2)) center/cover;margin-bottom:10px}
 
-/* ##### 9. CONTACT ##### */
+/* ##### 9. CLOSING & CONTACT (SECTION 6, part A) ##### */
 .contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px} /* 220px = min box width; 16px = gap */
 .contacts a,.contacts button{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:20px;text-align:left;color:var(--text);font:inherit;cursor:pointer;transition:.3s}
 .contacts a:hover,.contacts button:hover{border-color:var(--accent2);transform:translateY(-4px)}
 .contacts small{display:block;color:var(--muted)}
 .contacts b{font-family:var(--head);font-size:18px;word-break:break-all}
 
-/* ##### 10. FOOTER & "Copied!" POPUP ##### */
-footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px solid var(--line);font-size:14px}
+/* ##### 10. FOOTER (SECTION 6, part B) & "Copied!" POPUP ##### */
+footer{background:#070c17;border-top:1px solid var(--line);padding:40px 24px;position:relative;z-index:2}  /* #070c17 = solid footer color (fully opaque) */
+.foot-in{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.foot-in::before{content:"";width:46px;flex:none}   /* invisible spacer so the text stays centered */
+.foot-in p{flex:1;text-align:center;color:var(--muted);font-size:14px}
+#toTop{width:46px;height:46px;flex:none;border-radius:50%;border:1px solid var(--accent);background:var(--bg2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:.25s} /* arrow button: 46px */
+#toTop:hover{background:var(--accent);transform:translateY(-4px)}
 #toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,90px);background:var(--accent2);color:#111;padding:10px 22px;border-radius:30px;font-weight:600;transition:.4s;z-index:60}
 #toast.show{transform:translate(-50%,0)}
 
@@ -139,24 +160,33 @@ footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px sol
   .photo{order:-1;width:200px}      /* photo size on phones */
   #heroName{font-size:48px}         /* name size on phones */
   h2{font-size:32px}                /* section title size on phones */
-  .ld-name{font-size:36px}
+  .ld-1{font-size:48px}              /* "Hello!" on phones */
+  .ld-2{font-size:22px}
+  .tl{--ph:200px}
+  .tl::before,.tl .fill{left:7px}
+  .ev{display:block;padding-left:44px}
+  .ev::before{left:0}
+  .ev-photos{margin-bottom:24px}
   #burger{display:block}
   #links{position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);max-height:0;overflow:hidden;transition:max-height .35s}
   #links.open{max-height:360px;border-bottom:1px solid var(--line)}
   #links a{padding:14px 24px}
 }
+.resetting *{transition:none!important}  /* used by the arrow button to reset animations instantly */
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv,#heroName span{opacity:1;transform:none}}
 </style>
 </head>
 <body>
 
-<div class="glow g1"></div><div class="glow g2"></div>
 
+
+
+  
 <!-- ##################################################
-     SECTION: LOADING SCREEN
-     Change the name shown while the page loads.
+     SECTION 1 of 6: WELCOME & INTRO, part A: LOADING PAGE
+     Two white lines. Timing (when each line appears, when the page slides up) is in the JavaScript: LOADING PAGE TIMING.
      ################################################## -->
-<div id="loader"><div class="ld-name">Under Construction!</div><div class="ld-bar"><i id="ldBar"></i></div><div id="ldNum">0%</div></div>
+<div id="loader"><div class="ld-text"><div class="ld-1">Hello!</div><div class="ld-2">Nice to meet you.</div></div></div>
 
 <!-- ##################################################
      SECTION: TOP MENU BAR
@@ -177,16 +207,26 @@ footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px sol
 <main>
 
 <!-- ##################################################
-     SECTION: HOME (hero): greeting, name, intro, buttons, photo, counting numbers
+     SECTION 1 of 6: WELCOME & INTRO, part B: LANDING PAGE (slideshow, name, intro, photo, counting numbers)
      The typing words ("I am a ...") are in the JavaScript at the very bottom (ROLES).
      ################################################## -->
+  <div class="hero-wrap">
+    <!-- LANDING SLIDESHOW: 5 photos named slideshow-intro_1.jpg ... slideshow-intro_5.jpg (upload them next to index.html). Add or remove lines as you like. -->
+    <div class="hero-bg" aria-hidden="true">
+      <img class="hs" src="slideshow-intro_1.jpg" alt="" onerror="this.remove()">
+      <img class="hs" src="slideshow-intro_2.jpg" alt="" onerror="this.remove()">
+      <img class="hs" src="slideshow-intro_3.jpg" alt="" onerror="this.remove()">
+      <img class="hs" src="slideshow-intro_4.jpg" alt="" onerror="this.remove()">
+      <img class="hs" src="slideshow-intro_5.jpg" alt="" onerror="this.remove()">
+    </div>
+
   <section id="home">
     <div>
       <p class="hi">Hello! Nice to meet you.</p>
       <!-- NAME: one <b class="w"> per line. Put each word in its own <b class="w">...</b> -->
       <h1 id="heroName"><b class="w">Ardhan</b><b class="w">Kawakibi</b></h1>
       <p class="role">I am a <b id="typed"></b></p>
-      <p class="intro">Management student at Universitas Brawijaya with hands-on experience in consulting, market research, and operational improvement. Experienced in leading cross-functional teams, developing data-driven strategies, and improving organizational processes. Passionate about turning complex business challenges into actionable insights and sustainable growth opportunities.</p>
+      <p class="intro">Management student at Universitas Brawijaya with experience in consulting, business strategy, and operational improvement, skilled in leading teams and transforming complex business challenges into sustainable growth strategies.</p>
       <div class="btns">
         <a class="btn fill" href="#contact">Contact Me</a>
         <!-- CV BUTTON (optional): upload CV.pdf to GitHub, then copy this line right under the Contact Me button:  <a class="btn ghost" href="CV.pdf" download>Download CV</a> -->
@@ -194,84 +234,136 @@ footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px sol
     </div>
 
     <!-- PHOTO: to use a real photo, replace <div class="ini">AK</div> below with <img src="photo.jpg" alt="My photo"> (upload photo.jpg to GitHub first) -->
-    <div class="photo"><img src="profile_photo.jpg" alt="My photo">AK</div></div>
+    <div class="photo"><img src="profile_photo.jpg" alt="My photo"></div>
 
     <!-- COUNTING NUMBERS: data-to = the number it counts up to; data-suf = text after it (like +). Last text = label -->
     <div class="stats">
-      <div class="stat rv"><b class="count" data-to="3" data-suf="">0</b><span>Business & Consulting Projects</span></div>
-      <div class="stat rv"><b class="count" data-to="4" data-suf="+">0</b><span>Years in Leadership</span></div>
-      <div class="stat rv"><b class="count" data-to="150" data-suf="+">0</b><span>People Lead Across the Year</span></div>
+      <div class="stat rv"><b class="count" data-to="4" data-suf="+">0</b><span>Years of Leadership Experience</span></div>
+      <div class="stat rv"><b class="count" data-to="4" data-suf="">0</b><span>Business Project Experiences</span></div>
+      <div class="stat rv"><b class="count" data-to="10" data-suf="+">0</b><span>Competition Wins & Awards</span></div>
     </div>
   </section>
+  </div>
 
 <!-- ##################################################
-     SECTION: SKILLS STRIP (scrolling words)
+     SECTION 2 of 6: SKILLS
      One <span> per skill. The page repeats them automatically.
      ################################################## -->
   <div class="marq"><div class="track" id="track">
-    <span>PowerBI</span>
-    <span>Tableau</span>
-    <span>Presentation</span>
+    <span>Ms. Excel</span>
     <span>Decking</span>
     <span>Storytelling</span>
-    <span>Microsoft Office</span>
-    <span>Google Workspace</span>
+    <span>Presentation</span>
     <span>OBS</span>
+    <span>Ms. Word</span>
     <span>Figma</span>
-    <span>Communication</span>
+    <span>Power BI</span>
+    <span>Consulting</span>
     <span>Teamwork</span>
-    <span>Stakeholder Management</span>
+    <span>Ms. PowerPoint</span>
+    <span>Pattern Recognition</span>
     <span>Project Management</span>
     <span>Research</span>
-    <span>Consulting</span>
+    <span>Communication</span>
   </div></div>
 
 <!-- ##################################################
-     SECTION: TIMELINE: "A storyline of me!"
+     SECTION 3 of 6: STORYLINE
      Each <div class="ev rv"> block is ONE year. Copy a whole block to add a year, delete one to remove it.
+     PHOTOS: each year has a <div class="ev-photos"> with 2-3 <div class="pic"> lines. Photo files are named
+     storyline-photo_1.jpg, storyline-photo_2.jpg ... (numbered across all years). Add or delete a pic line to change the count.
      The last block has class "future" (greyed out); remove the word "future" to make it normal.
      ################################################## -->
   <section id="about">
-    <h2 class="rv">A storyline of me!</h2>
-    <p class="sub rv">I didn't have everything figured out from the beginning, and honestly, I still don't. I've just always been curious about what I could learn by trying something new, meeting different people, and putting myself in unfamiliar situations. Looking back, every chapter has taught me something that brought me a little closer to where I want to be.</p>
+    <h2 class="rv">A Storyline of Me</h2>
+    <p class="sub rv"><i>Ardhan comes from a family with a background in the IT sector. From early elementary school, he got the opportunities to develop his <b>motoric & cognitive skills</b> through various activities: robotics (Fischertechnik) and Arduino. In this time, he was <b>used to using computers</b>; he also frequently played video games and watched movies in English settings.</i></p>
     <div class="tl" id="tl">
       <div class="fill" id="tlFill"></div>
       <div class="ev rv">
-        <div class="yr">2023</div>
-        <h3>Prologue</h3>
-        <div class="where">HK IBS</div>
-        <p>My final year of high school was coming to an end, and I was getting ready to leave familiar surroundings for a new city. It felt like the right time to challenge myself, meet new people, and see what I could discover beyond what I already knew.</p>
+        <div class="ev-photos">
+          <div class="stack" role="button" tabindex="0" aria-label="2023 photos: tap to flip through">
+            <div class="pic" data-name="storyline-photo_1.jpg"><img src="storyline-photo_1.jpg" alt="2023, photo 1" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_2.jpg"><img src="storyline-photo_2.jpg" alt="2023, photo 2" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_3.jpg"><img src="storyline-photo_3.jpg" alt="2023, photo 3" onerror="this.remove()"></div>
+          </div>
+          <div class="hint">Tap to flip</div>
+        </div>
+        <div class="ev-text">
+          <div class="yr">2023</div>
+          <h3>The First Steps</h3>
+          <div class="where">Husnul Khotimah IBS</div>
+          <p><i>Building on the computer and English skills he had developed at a young age, Ardhan became involved in <b>various computer-based projects</b> (Excel, Word, and OBS). Furthermore, his English proficiency, which placed him in the top 2.5% in his high-school, earned him the trust to take on a <b>supervisory role</b> in his school's language department. It was here that he gained significant problem-solving & leadership experience.</i></p>
+        </div>
       </div>
       <div class="ev rv">
-        <div class="yr">2024</div>
-        <h3>What's this?</h3>
-        <div class="where">Management, Universitas Brawijaya</div>
-        <p>University was where things started to open up. I got involved in student organizations, explored different interests, and found myself taking on opportunities I probably wouldn't have considered before. I was still figuring things out, but I knew I wanted to make the most of my time here.</p>
+        <div class="ev-photos">
+          <div class="stack" role="button" tabindex="0" aria-label="2024 photos: tap to flip through">
+            <div class="pic" data-name="storyline-photo_4.jpg"><img src="storyline-photo_4.jpg" alt="2024, photo 1" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_5.jpg"><img src="storyline-photo_5.jpg" alt="2024, photo 2" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_6.jpg"><img src="storyline-photo_6.jpg" alt="2024, photo 3" onerror="this.remove()"></div>
+          </div>
+          <div class="hint">Tap to flip</div>
+        </div>
+        <div class="ev-text">
+          <div class="yr">2024</div>
+          <h3>Exploring A Whole New World</h3>
+          <div class="where">Faculty of Economics & Business, Universitas Brawijaya</div>
+          <p><i>Starting university opened up more opportunities than Ardhan could have imagined. Eager to explore, he joined various student organizations and committees, taking on almost every opportunity that came his way. As the year went on, he began to realize something: <b>not every opportunity was meant to be taken.</b> By the end of 2024, Ardhan started becoming <b>more aware</b> about the paths he wanted to pursue, choosing experiences that aligned better with his interests and goals.</i></p>
+        </div>
       </div>
       <div class="ev rv">
-        <div class="yr">2025</div>
-        <h3>Gamechanger</h3>
-        <div class="where">First Internship &amp; Project Leadership</div>
-        <p>Somewhere along the way, I realized I wanted to do more than learn things in class. I started getting involved in business projects, competitions, and professional experiences that challenged me to think differently and take more responsibility. I learned that having an idea is one thing; working with people to turn it into something real is a completely different experience.</p>
+        <div class="ev-photos">
+          <div class="stack" role="button" tabindex="0" aria-label="2025 photos: tap to flip through">
+            <div class="pic" data-name="storyline-photo_7.jpg"><img src="storyline-photo_7.jpg" alt="2025, photo 1" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_8.jpg"><img src="storyline-photo_8.jpg" alt="2025, photo 2" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_9.jpg"><img src="storyline-photo_9.jpg" alt="2025, photo 3" onerror="this.remove()"></div>
+          </div>
+          <div class="hint">Tap to flip</div>
+        </div>
+        <div class="ev-text">
+          <div class="yr">2025</div>
+          <h3>The Gamechanger</h3>
+          <div class="where">Internship & Masterclass: Equity Research</div>
+          <p><i>2025 proved to be a major turning point in Ardhan’s career. Seeking more than just classroom learning, he undertook an <b>internship</b> near his home. On campus, he demonstrated his <b>leadership and project management</b> capabilities by organizing the first-ever equity research bootcamp for university students in Indonesia, an achievement that earned him recognition for his organizational contributions at UB, based on the scale and success of the project he led.</i></p>
+        </div>
       </div>
       <div class="ev rv">
-        <div class="yr">2026</div>
-        <h3>Executive era</h3>
-        <div class="where">Leadership &amp; Professional Growth</div>
-        <p>This chapter has been about taking on bigger responsibilities and learning as I go. Leading teams, working across different functions, and being involved in consulting and business projects have taught me a lot about people, execution, and the realities behind good ideas. It's also when my interest in Business Development and Strategy really started to take shape. I enjoy understanding how businesses work, spotting opportunities, and figuring out what can be done to make things better.</p>
+        <div class="ev-photos">
+          <div class="stack" role="button" tabindex="0" aria-label="2026 photos: tap to flip through">
+            <div class="pic" data-name="storyline-photo_10.jpg"><img src="storyline-photo_10.jpg" alt="2026, photo 1" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_11.jpg"><img src="storyline-photo_11.jpg" alt="2026, photo 2" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_12.jpg"><img src="storyline-photo_12.jpg" alt="2026, photo 3" onerror="this.remove()"></div>
+          </div>
+          <div class="hint">Tap to flip</div>
+        </div>
+        <div class="ev-text">
+          <div class="yr">2026</div>
+          <h3>Finding His Place</h3>
+          <div class="where">Consulting & Research Projects, ShARE UB</div>
+          <p><i>By this point, Ardhan had developed a solid foundation in leadership and analytical thinking. Driven by a courage to make a <b>more meaningful impact</b>, he stepped into the Vice President role for 2 different organizations and participated in various research and consulting projects. During this time, he found himself drawn to <b>understanding how businesses work.</b> Thus, he committed himself to pursuing a career in the business sector.</i></p>
+        </div>
       </div>
       <div class="ev rv future">
-        <div class="yr">2027</div>
-        <h3>Let's explore.</h3>
-        <div class="where">The New Chapter</div>
-        <p>There's still a lot I want to learn, and that's what excites me. I'm looking forward to getting closer to real business challenges through opportunities in Business Development, Corporate Strategy, and consulting. I want to work with people I can learn from, take on problems that push me beyond what I already know, and contribute wherever I can.</p>
+        <div class="ev-photos">
+          <div class="stack" role="button" tabindex="0" aria-label="2027 photos: tap to flip through">
+            <div class="pic" data-name="storyline-photo_13.jpg"><img src="storyline-photo_13.jpg" alt="2027, photo 1" onerror="this.remove()"></div>
+            <div class="pic" data-name="storyline-photo_14.jpg"><img src="profile_photo.jpg" alt="2027, photo 2" onerror="this.remove()"></div>
+          </div>
+          <div class="hint">Tap to flip</div>
+        </div>
+        <div class="ev-text">
+          <div class="yr">2027</div>
+          <h3>What's Next?</h3>
+          <div class="where">Jakarta, Indonesia</div>
+          <p><i>Next year, Ardhan hopes to learn from <b>exceptional individuals</b>, collaborate with a passionate team & colleagues, and contribute in ways that create a <b>tangible impact</b> to his organization. He aspires to work for an impactful organization, also to keep bringing positivity to the people and communities around him.</i></p>
+        </div>
       </div>
     </div>
-    <p>For now, I'm not trying to have everything figured out. I'm focused on staying curious, doing the work, and making the most of whatever comes next.</p>
+    <p><i>Ardhan is open to internship opportunities, research collaborations, and projects that give him the chance to explore something new. He's always willing to learn, ready to take on new challenges, and determined to give his best to every team and every opportunity that comes his way.</i></p>
   </section>
 
 <!-- ##################################################
-     SECTION: CERTIFICATES
+     SECTION 4 of 6: CERTIFICATES & CREDENTIALS
      Each <div class="card rv"> is ONE certificate. Copy a whole card to add another.
      Links must start with https:// . Delete the whole <a class="btn ghost"...> line if there is no link.
      ################################################## -->
@@ -304,84 +396,84 @@ footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px sol
   </section>
 
 <!-- ##################################################
-     SECTION: PROJECTS
+     SECTION 5 of 6: PROJECT HIGHLIGHTS
      Each <div class="card rv"> is ONE project. Copy a whole card to add another.
      "View PDF" points to a file in your GitHub projects/ folder. Delete that line if there is no PDF.
      ################################################## -->
   <section id="projects">
-    <h2 class="rv">Selected Projects</h2>
-    <p class="sub rv">A few projects that have shaped how I think about business, approach problems, and work with people. From market research to operational improvement, each experience has given me a chance to turn what I've learned into something practical.</p>
+    <h2 class="rv">Project Highlights</h2>
+    <p class="sub rv">Here are a few projects from previous years that represents my work. Some projects cannot be shown because of confidentiality reasons.</p>
     <div class="grid">
       <!-- PROJECT 1 -->
       <div class="card rv">
         <div class="cover" style="background-image:url('2026_bpc_undip.jpg')"></div>
-        <div class="meta"><span class="code">Business & Analytics</span><span>Oct 2026</span></div>
-        <h3>Business Plan Deck</h3>
-        <p>A comprehensive business plan for a startup venture in the agricultural sector.</p>
-        <div class="hl">Won 1st Place among 50 teams</div>
-        <div class="tags"><span>Agriculture</span><span>Animal Science</span></div>
+        <div class="meta"><span class="code">Competition Deck</span><span>Oct 2026</span></div> <!-- header & date -->
+        <h3>1st Place National BPC At UNDIP</h3> <!-- title -->
+        <p>Conducted market research in agriculture industry and developed a full business plan proposal</p> <!-- description -->
+        <div class="hl">Achieved 1st place among 82 teams</div> <!-- highlight -->
+        <div class="tags"><span>Business Planning</span><span>Financial Forecasting</span><span>Agriculture &amp; Animal Science (Intermediate)</span></div> <!-- skills -->
         <a class="btn fill" href="2026_bpc_undip.pdf" target="_blank" rel="noopener">View PDF</a>
       </div>
       <!-- PROJECT 2 -->
       <div class="card rv">
         <div class="cover" style="background-image:url('2026_final_summit.jpg')"></div>
-        <div class="meta"><span class="code">Strategy & Planning</span><span>May 2026</span></div>
-        <h3>Final Summit Deck</h3>
-        <p>Researched Dove by Unilever to propose a new marketing strategy to support their marketing campaign "Real Beauty".</p>
-        <div class="hl">Developed 3 marketing strategies</div>
-        <div class="tags"><span>Marketing</span><span>Brand Management</span></div>
+        <div class="meta"><span class="code">Leadership &amp; Planning</span><span>Nov 2026</span></div>
+        <h3>Masterclass: Equity Research</h3>
+        <p>Led a team of 50+ from various cohort and designed 10+ project management tools</p>
+        <div class="hl">Attracting 100+ learners across SEA</div>
+        <div class="tags"><span>Strategic Planning</span><span>Resource Planning</span><span>Delegation</span><span>Equity Research</span></div>
         <a class="btn fill" href="2026_final_summit.pdf" target="_blank" rel="noopener">View PDF</a>
       </div>
       <!-- PROJECT 3 -->
       <div class="card rv">
          <div class="cover" style="background-image:url('2025_site_survey.jpeg')"></div>
-        <div class="meta"><span class="code">Research & Planning</span><span>Dec 2025</span></div>
-        <h3>Site Survey Report</h3>
-        <p>Conducted a comprehensive site survey for a proposed development project in Cileunca Hills.</p>
-        <div class="hl">Completed detailed analysis and recommendations</div>
-        <div class="tags"><span>Research</span><span>Planning</span></div>
+        <div class="meta"><span class="code">Research Deck</span><span>May 2025</span></div>
+        <h3>Purpose-Led Final Summit</h3>
+        <p>Researched Dove by Unilever regarding their Real Beauty campaign & purposeful initiatives</p>
+        <div class="hl">Developed 4 slides out of 11</div>
+        <div class="tags"><span>Analytical Thinking</span><span>Storylining</span><span>Strategy Development</span><span>Financial Forecasting</span></div>
         <a class="btn fill" href="2025_site_survey.pdf" target="_blank" rel="noopener">View PDF</a>
       </div>
       <!-- PROJECT 4 -->
       <div class="card rv">
          <div class="cover" style="background-image:url('2026_bcc_exsum_tugu.jpg')"></div>
-        <div class="meta"><span class="code">Business & Analytics</span><span>Aug 2026</span></div>
-        <h3>BCC Executive Summary</h3>
-        <p>Prepared an executive summary for the Business & Analytics competition.</p>
-        <div class="hl">Presented key findings and recommendations</div>
-        <div class="tags"><span>Business Analysis</span><span>Strategy</span></div>
+        <div class="meta"><span class="code">Report Deck</span><span>Dec 2025</span></div>
+        <h3>Site Survey Report At Pangalengan</h3>
+        <p>Surveyed a site for property acquisition purposes & reported findings to company stakeholders</p>
+        <div class="hl">Presented detailed report & conclusions</div>
+        <div class="tags"><span>Detailed Thinking</span><span>Market Research</span><span>Logical Reasoning</span><span>Legal (Basic)</span></div>
         <a class="btn fill" href="2026_bcc_exsum_tugu.pdf" target="_blank" rel="noopener">View PDF</a>
       </div>
       <!-- PROJECT 5 -->
       <div class="card rv">
          <div class="cover" style="background-image:url('2026_akunresearchaja-1.png')"></div>
-        <div class="meta"><span class="code">Miscellaneous</span><span>Jan 2026</span></div>
-        <h3>Personal Research 1</h3>
-        <p>Conducted personal research on a topic of IHSG downside.</p>
-        <div class="hl">Gained insights and developed a deeper understanding</div>
-        <div class="tags"><span>Research</span><span>Analysis</span></div>
+        <div class="meta"><span class="code">Grand Design Deck</span><span>Nov 2025</span></div>
+        <h3>Open Tender Leader Organization</h3>
+        <p>Intended for registering open tender CEO KSPM FEB UB, showing loyalty & courage to growth sustainably</p>
+        <div class="hl">Being the 2nd most voted candidate</div>
+        <div class="tags"><span>Organizational Development</span><span>Benchmarking</span><span>Strategic Planning</span></div>
         <a class="btn fill" href="2026_akunresearchaja-1.pdf" target="_blank" rel="noopener">View PDF</a>
       </div>
       <!-- PROJECT 6 -->
       <div class="card rv">
          <div class="cover" style="background-image:url('2026_akunresearchaja-2.png')"></div>
-        <div class="meta"><span class="code">Miscellaneous</span><span>Feb 2026</span></div>
-        <h3>Personal Research 2</h3>
-        <p>Continued research on the topic of BI Governance reshuffle.</p>
-        <div class="hl">Identified key trends and potential risks</div>
-        <div class="tags"><span>Research</span><span>Analysis</span></div>
+        <div class="meta"><span class="code">Instagram Research</span><span>Jan 2026</span></div>
+        <h3>Research For Indonesian Capital Market</h3>
+        <p>Intended for a personal graphic design & research portfolio in the first place &amp; for hobby purposes</p>
+        <div class="hl">Landed 2 job offerings within two months</div>
+        <div class="tags"><span>Graphic Design</span><span>Storylining</span><span>Economics</span></div>
         <a class="btn fill" href="2026_akunresearchaja-2.pdf" target="_blank" rel="noopener">View PDF</a>
       </div>
     </div>
   </section>
 
 <!-- ##################################################
-     SECTION: CONTACT
+     SECTION 6 of 6 (part A): CLOSING & CONTACT
      Links open in a new tab. The email box has data-copy="..." and copies the address when clicked.
      ################################################## -->
   <section id="contact">
     <h2 class="rv">Let's Work Together</h2>
-    <p class="sub rv">I'm open to internship opportunities, consulting projects, and collaborations where I can contribute through strategic thinking, research, and structured problem-solving. Whether you have an opportunity to share, a project to discuss, or simply want to exchange ideas, I'd be happy to connect. Feel free to reach out through whichever channel works best for you.</p>
+    <p class="sub rv">Feel free to reach out through any of the channels below!</p>
     <div class="contacts">
       <a class="rv" href="https://www.linkedin.com/in/ardhan-kawakibi/" target="_blank" rel="noopener"><small>LinkedIn</small><b>Ardhan Kawakibi</b></a>
       <button class="rv" data-copy="ma.kawakibi@gmail.com"><small>Email</small><b>ma.kawakibi@gmail.com</b></button>
@@ -392,37 +484,69 @@ footer{text-align:center;color:var(--muted);padding:40px 24px;border-top:1px sol
 </main>
 
 <!-- ##################################################
-     SECTION: FOOTER
+     SECTION 6 of 6 (part B): FOOTER (solid, with the back-to-top arrow)
      ################################################## -->
-<footer>Thank you for stopping by. Looking forward to connecting and creating something meaningful together!</footer>
+<footer>
+  <div class="foot-in">
+    <p>Thank you for stopping by. Looking forward to connecting and creating something meaningful together!</p>
+    <button id="toTop" aria-label="Back to top and replay animations" title="Back to top">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
+  </div>
+</footer>
 <div id="toast">Copied!</div>
 
 <script>
-/* ##### JAVASCRIPT (animations). The only thing to edit: the ROLES list ##### */
-const ROLES = ["Management Student", "Consulting Enthusiast", "Market Research Analyst", "Team Leader"];  /* words that type out after "I am a" */
+
+
+
+
+
+/* ##### JAVASCRIPT (animations). Things you may edit: ROLES, LOADING PAGE TIMING, SLIDESHOW TIMING, STORYLINE DROP, LIGHTS ##### */
+const ROLES = ["Management Student", "Consulting Enthusiast", "Market Researcher", "Team Leader"];  /* words that type out after "I am a" */
+
+/* ===== LOADING PAGE TIMING (milliseconds, 1000 = 1 second) ===== */
+const LOAD = { start: 300, gap: 500, fade: 800, hold: 500 };
+/* start = wait before "Hello!" fades in
+   gap   = "Nice to meet you." fades in this long after "Hello!" starts
+   fade  = how long each line takes to fade in
+   hold  = wait after the 2nd line is fully visible, then the page slides up */
+
+/* ===== LANDING SLIDESHOW TIMING ===== */
+const SLIDE = { hold: 3000, fade: 1500 };  /* hold = each photo stays; fade = cross-fade time */
+
+/* ===== STORYLINE PHOTO DROP ===== */
+const DROP = { y: 170, rot: 14, ms: 520 }; /* y = how far the photo drops in px (negative number = flies up); rot = tilt in degrees; ms = speed */
 
 const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const rand = (a, b) => a + Math.random() * (b - a);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* loading screen counter */
-let p = 0;
-const lt = setInterval(() => {
-  p = Math.min(100, p + Math.random() * 1 + 2 + 4 );
-  $("#ldBar").style.width = p + "%"; $("#ldNum").textContent = Math.floor(p) + "%";
-  if (p >= 100) { clearInterval(lt); setTimeout(() => { $("#loader").classList.add("done"); document.body.classList.add("ready"); startTyping(); }, 350); }
-}, 80);
+/* ---------- 1A. loading page ---------- */
+const l1 = $(".ld-1"), l2 = $(".ld-2");
+l1.style.transitionDuration = l2.style.transitionDuration = LOAD.fade + "ms";
+setTimeout(() => l1.classList.add("show"), LOAD.start);
+setTimeout(() => l2.classList.add("show"), LOAD.start + LOAD.gap);
+setTimeout(() => { $("#loader").classList.add("done"); beginLanding(); }, LOAD.start + LOAD.gap + LOAD.fade + LOAD.hold);
 
+function beginLanding() {
+  document.body.classList.add("ready");   /* starts the landing page animations */
+  observeAll(); startTyping(); startSlides();
+}
+
+/* ---------- 1B. landing page ---------- */
 /* split the big name into letters so they can animate */
-document.querySelectorAll("#heroName .w").forEach((w, wi) => {
+$$("#heroName .w").forEach((w, wi) => {
   w.innerHTML = [...w.textContent].map((c, i) => `<span style="transition-delay:${0.9 + (wi * 7 + i) * 0.04}s">${c}</span>`).join("");
 });
 
-/* skills strip: repeat the list once so the loop has no gap */
-$("#track").innerHTML += $("#track").innerHTML;
-
 /* typing effect */
+let typeRun = 0;
 function startTyping() {
-  let r = 0, i = 0, del = false; const el = $("#typed");
+  const run = ++typeRun; let r = 0, i = 0, del = false; const el = $("#typed"); el.textContent = "";
   (function tick() {
+    if (run !== typeRun) return;
     const w = ROLES[r];
     el.textContent = w.slice(0, i);
     if (!del && i === w.length) { del = true; return setTimeout(tick, 1400); }
@@ -431,35 +555,119 @@ function startTyping() {
   })();
 }
 
-/* fade-in on scroll + number counting */
+/* slideshow */
+let slideIdx = 0, slideTimer;
+$(".hero-bg").style.setProperty("--fade", SLIDE.fade + "ms");
+function showSlide(n) {
+  const s = $$(".hs"); if (!s.length) return;
+  slideIdx = (n + s.length) % s.length;
+  s.forEach((el, i) => el.classList.toggle("on", i === slideIdx));
+}
+function startSlides() { clearInterval(slideTimer); showSlide(0); slideTimer = setInterval(() => showSlide(slideIdx + 1), SLIDE.hold + SLIDE.fade); }
+
+/* ---------- 2. skills strip: repeat the list once so the loop has no gap ---------- */
+$("#track").innerHTML += $("#track").innerHTML;
+
+/* ---------- fade-in on scroll + number counting (waits until the loading page is gone) ---------- */
 const io = new IntersectionObserver(es => es.forEach(e => {
-  if (!e.isIntersecting) return;
+  if (!e.isIntersecting || !document.body.classList.contains("ready")) return;
   e.target.classList.add("in");
   const c = e.target.querySelector(".count");
   if (c && !c.done) { c.done = 1; const to = +c.dataset.to, t0 = performance.now(); (function f(t) { const k = Math.min(1, (t - t0) / 1500); c.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))) + c.dataset.suf; if (k < 1) requestAnimationFrame(f); })(t0); }
   io.unobserve(e.target);
 }), { threshold: .2 });
-document.querySelectorAll(".rv").forEach(el => io.observe(el));
+function observeAll() { $$(".rv").forEach(el => { io.unobserve(el); io.observe(el); }); }
 
-/* timeline line growing + highlighted menu item */
+/* ---------- 3. storyline: tap the photo stack, the top photo drops, the next one shows, then it loops ---------- */
+const SLOT = ["translate(0px,0px) rotate(0deg) scale(1)", "translate(14px,12px) rotate(4deg) scale(.96)", "translate(-12px,22px) rotate(-4deg) scale(.92)"];
+const stacks = $$(".ev-photos").map(box => {
+  const st = box.querySelector(".stack"), hint = box.querySelector(".hint");
+  const first = $$(".pic").length ? [...st.querySelectorAll(".pic")] : [];
+  const total = first.length; let order = [...first], busy = false;
+  st.style.setProperty("--drop", DROP.ms + "ms");
+  const layout = () => {
+    order.forEach((el, i) => { el.style.transform = SLOT[Math.min(i, 2)]; el.style.opacity = i < 3 ? 1 : 0; el.style.zIndex = total - i; });
+    hint.textContent = total > 1 ? `Tap to flip · ${first.indexOf(order[0]) + 1}/${total}` : "";
+  };
+  const flip = () => {
+    if (busy || total < 2) return; busy = true;
+    const top = order[0], dir = Math.random() < .5 ? -1 : 1;
+    top.style.transform = `translate(${dir * 30}px,${DROP.y}px) rotate(${dir * DROP.rot}deg)`; top.style.opacity = 0;
+    setTimeout(() => { order.push(order.shift()); top.style.transition = "none"; layout(); void top.offsetWidth; top.style.transition = ""; busy = false; }, DROP.ms);
+  };
+  st.addEventListener("click", flip);
+  st.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); } });
+  layout();
+  return () => { order = [...first]; layout(); };   /* reset function (used by the arrow button) */
+});
+
+/* ---------- timeline line growing + highlighted menu item ---------- */
 const tl = $("#tl");
 function onScroll() {
   const r = tl.getBoundingClientRect(), h = Math.max(0, Math.min(r.height, innerHeight * .6 - r.top));
   $("#tlFill").style.height = h + "px";
   let cur = "home";
-  document.querySelectorAll("section").forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .4) cur = s.id; });
-  document.querySelectorAll("#links a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + cur));
+  $$("section").forEach(s => { if (s.getBoundingClientRect().top < innerHeight * .4) cur = s.id; });
+  $$("#links a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + cur));
 }
 addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
-/* phone menu button and copy-email */
+/* ---------- phone menu button and copy-email ---------- */
 $("#burger").onclick = () => $("#links").classList.toggle("open");
 $("#links").onclick = () => $("#links").classList.remove("open");
-document.querySelectorAll("[data-copy]").forEach(b => b.onclick = () => {
+$$("[data-copy]").forEach(b => b.onclick = () => {
   (navigator.clipboard ? navigator.clipboard.writeText(b.dataset.copy) : Promise.resolve()).finally(() => {
     $("#toast").classList.add("show"); setTimeout(() => $("#toast").classList.remove("show"), 1600);
   });
 });
+
+/* ---------- 6. footer arrow: scroll to top, then replay all animations (not the loading page) ---------- */
+function restartAnimations() {
+  const b = document.body;
+  b.classList.add("resetting"); b.classList.remove("ready");      /* resetting = jump back instantly, no fade */
+  $$(".rv").forEach(el => { el.classList.remove("in"); io.unobserve(el); });
+  $$(".count").forEach(c => { c.done = 0; c.textContent = "0"; });
+  $("#tlFill").style.height = "0px";
+  stacks.forEach(reset => reset());
+  clearInterval(slideTimer); $$(".hs").forEach(el => el.classList.remove("on"));
+  typeRun++; $("#typed").textContent = "";
+  void b.offsetWidth;
+  b.classList.remove("resetting");
+  setTimeout(() => { beginLanding(); onScroll(); }, 150);
+}
+$("#toTop").onclick = () => {
+  scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  const t0 = Date.now(), w = setInterval(() => { if (scrollY < 3 || Date.now() - t0 > 3000) { clearInterval(w); restartAnimations(); } }, 80);
+};
+
+/* ---------- 9. LIGHTS: soft background lights that wander randomly ---------- */
+const LIGHTS = [                              /* size = px; op = [min, max] brightness (keep low so text stays readable) */
+  { color: "var(--accent)",  size: 600, op: [.10, .20] },
+  { color: "var(--accent2)", size: 480, op: [.08, .16] },
+  { color: "var(--accent)",  size: 420, op: [.08, .16] },
+  { color: "#7a5cff",        size: 520, op: [.08, .15] }
+];
+const LIGHT_TIME = [16, 28];                  /* seconds for one move (bigger = slower, calmer) */
+LIGHTS.forEach(L => {
+  const el = document.createElement("div"); el.className = "glow";
+  el.style.cssText = `width:${L.size}px;height:${L.size}px;background:${L.color}`;
+  document.body.prepend(el);
+  const move = first => {
+    const t = rand(...LIGHT_TIME);
+    el.style.transition = first ? "none" : `transform ${t}s ease-in-out, opacity ${t}s ease-in-out`;
+    el.style.transform = `translate(${rand(-.1, 1) * innerWidth - L.size / 2}px,${rand(-.1, 1) * innerHeight - L.size / 2}px) scale(${rand(.85, 1.25)})`;
+    el.style.opacity = first && !reduceMotion ? 0 : rand(...L.op);
+    if (!reduceMotion) setTimeout(() => move(false), first ? 60 : t * 1000);
+  };
+  move(true);
+});
+/* one extra soft light that slowly follows the mouse (desktop only) */
+if (matchMedia("(pointer:fine)").matches && !reduceMotion) {
+  const f = document.createElement("div"); f.className = "glow";
+  f.style.cssText = "width:360px;height:360px;background:var(--accent2);opacity:.10;transform:translate(-400px,-400px);transition:transform 1.4s cubic-bezier(.2,.7,.2,1)";
+  document.body.prepend(f);
+  addEventListener("pointermove", e => { f.style.transform = `translate(${e.clientX - 180}px,${e.clientY - 180}px)`; }, { passive: true });
+}
 </script>
 </body>
 </html>
